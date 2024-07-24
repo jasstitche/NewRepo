@@ -1,0 +1,116 @@
+﻿@using System.Security.Claims 
+@model Core.Models.ApplicationUser
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    .container {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        
+    }
+
+    .sidebar {
+        width: 250px;
+        background-color: #333;
+        color: #fff;
+        padding: 15px;
+        transition: width 0.3s;
+    }
+
+        .sidebar h2 {
+            text-align: center;
+            color: #D29737;
+            
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+            .sidebar ul li {
+                margin: 15px 0;
+            }
+
+                .sidebar ul li a {
+                    color: #fff;
+                    text-decoration: none;
+                }
+
+    .main-content {
+        flex: 1;
+        background-color: #D29737;
+        padding: 20px;
+    }
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #fff;
+        padding: 10px 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+        .header h1 {
+            margin: 0;
+        }
+
+    .toggle-btn {
+        background-color: #333;
+        color: #D29737;
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+        font-size: 18px;
+    }
+
+    .content {
+        padding: 20px;
+    }
+
+    .sidebar.open {
+        width: 250px;
+        padding: 15px;
+    }
+
+    .main-content {
+        flex: 1;
+        margin-left: 0;
+    }
+
+</style>
+
+<body>
+    <div class="container">
+        <div class="sidebar" id="sidebar">
+            <h2>User Index</h2>
+            <ul>
+                <li><a asp-action="Index" asp-controller="Orders">Order History</a></li>
+                <li><a href="#">Profile Settings</a></li>
+                <li><a href="#">Address Book.</a></li>
+            </ul>
+        </div>
+        <div class="main-content">
+            <div class="header">
+                <h1>Welcome, 
+                     @* User.Claims.FirstOrDefault(f => f.Type == ClaimTypes.Name)?.Value *@ 
+                    @Model.FirstName
+                </h1>
+            </div>
+            <div class="content">
+                <h2>Dashboard Content</h2>
+                <p>This is where the main content of the dashboard will be displayed.</p>
+            </div>
+        </div>
+    </div>
+</body>

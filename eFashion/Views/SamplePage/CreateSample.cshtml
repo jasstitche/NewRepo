@@ -1,0 +1,90 @@
+﻿@model Core.Models.SamplePage
+
+@{
+           
+    ViewData["Title"] = "SamplePage";
+
+}
+
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        padding: 20px;
+        background-color: #f9f9f9;
+    }
+
+    .container {
+        background: #D29737;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .sample-detail {
+        margin-bottom: 10px;
+    }
+
+        .sample-detail label {
+            font-weight: bold;
+        }
+
+        .sample-detail span {
+            margin-left: 10px;
+        }
+
+    .center-text {
+        text-align: center;
+    }
+</style>
+
+
+        <body>
+            <div class="container card-body form-group w-50">
+                 <form method="post" asp-action="CreateSample" asp-controller="SamplePage" class="mb-5" enctype="multipart/form-data">
+                    <h1 style="text-align: center;"><b>Create Sample</b></h1>
+            
+                
+                    <div class="sample-detail">
+                    <label><b>Design Name</b></label>
+                    <input type="text" asp-for="DesignName" class="form-control"/>
+                    </div>
+
+                    <div class="sample-detail">
+                        <label><b>Material Name</b></label> 
+                        <input type="text" asp-for="MaterialName" class="form-control" />
+                    </div>
+
+                    <div class="sample-detail">
+                        <label><b>Cloth Size</b></label>
+                    <input type="text" asp-for ="ClothSize" class="form-control" />
+                     </div>
+                    <div class="sample-detail">
+                        <label><b>Price</b></label>
+                    <input type="number" asp-for="Price" class="form-control" />
+                    </div>
+
+                    <div class="NumberOfItem">
+                         <label><b>Number of Items</b></label>
+                    <input type="number" asp-for="NumberOfItem" class="form-control" />
+                    </div>
+
+                    <div class="sample-detail">
+                        <label><b>Sample Image</b></label>
+                        <input type="file" asp-for="SampleImage" />
+                    </div>
+
+                    
+
+
+
+                    <div class="text-center mt-3">
+                        <button type="submit" class="btn P-2" style="background-color: black; color:#f9f9f9;"><b>Submit</b></button>
+
+                    </div>
+                </form>
+            </div>
+        </body>
+
+

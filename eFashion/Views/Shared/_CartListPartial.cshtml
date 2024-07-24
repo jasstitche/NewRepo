@@ -1,0 +1,199 @@
+﻿ @model List<Core.ViewModels.SamplePageViewModel>
+
+ @{
+    ViewData["Title"] = "Cart Page";
+    // Layout = "~/views/shared/_layout.cshtml";
+} 
+
+<style>
+     body {
+        counter-reset: Serial;
+    }
+
+    tr td:first-child:before {
+        counter-increment: Serial;
+        content: counter(Serial);
+    } 
+        
+   .table-responsive {
+        overflow: auto;
+        
+         width: 100%;
+         display: block;
+         height: 500px; 
+    }
+
+    .table-responsive table {
+       width: 100%;
+       border-collapse: collapse;
+       height: 400px; important
+    }
+
+/* .table-responsive table th, .table-responsive table td {
+  word-wrap: break-word;
+  white-space: normal;
+  padding: 8px;
+  text-align: left;
+  border: 1px solid #ddd;
+} */
+
+.table-responsive table thead th {
+  position: sticky;
+  top: 0;
+  background-color: #f2f2f2;
+  z-index: 1;
+} 
+
+.table-responsive table tbody tr {
+  border-bottom: 1px solid #ddd;
+}
+
+.table-responsive table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.cart-actions {
+  text-align: right;
+  padding: 10px;
+  margin-bottom :20px;
+}
+
+.cart-actions button[type="button"] {
+  margin: 5px;
+}
+
+    .quantity-controls {
+        display: flex;
+        align-items: center;
+    }
+
+    .quantity-controls button {
+            width: 30px;
+            height: 30px;
+            font-size: 18px;
+            text-align: center;
+            line-height: 30px;
+            margin: 0 5px;
+     }
+
+    .quantity-controls input {
+            width: 50px;
+            text-align: center;
+            
+           
+</style>
+
+
+<div class="container">
+
+    @if (Model != null && Model.Count() > 0)
+    {
+        <div class="table-responsive">
+            <table class="table table-responsive table-hover table-striped custom-table  mb-0">
+                <thead>
+                    <tr>
+                        <th>S/N</th>
+                        <th>
+                            PHOTO
+
+                        </th>
+                        <th>ITEM</th>
+                        <th>UNIT PRICE</th>
+                        <th>
+                            QUANTITY
+                        </th>
+                        <th>SUBTOTAL</th>
+                        <th>ACTION</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td></td>
+                            <td>
+                                @if (item.SamplesPage != null && item.SamplesPage.File != null)
+                                {
+                                    var imageUrl = Url.Content($"~/{item.SamplesPage.File}");
+                                    <img src="@imageUrl" alt="@item.SamplesPage.DesignName" width="50" />
+                                    
+                                }
+                                else
+                                {
+                                    <span>No Image</span>
+                                }
+                               
+                            </td>
+
+                            <td>
+                                @if (item.SamplesPage != null)
+                                {
+                                    @item.SamplesPage.DesignName
+                                    <span>@item.SamplesPage.MaterialName</span>
+                                    <span>@item.SamplesPage.ClothSize</span>
+                                }
+                                else
+                                {
+                                    <span>No Details</span>
+                                }
+                           
+                            </td>
+                            <td>
+                                @{
+                                    decimal unitPrice;
+                                    if (@item.SamplesPage?.Price != null)
+                                    {
+                                        unitPrice = (decimal)@item.SamplesPage.Price;
+                                    }
+                                    else
+                                    {
+                                        unitPrice = 0m;
+                                    }
+                                }
+
+                                <p>Unit Price: @unitPrice</p>
+
+
+                            </td>
+
+                            <td>
+
+                                <button class="decrement" onclick="updateQuantity('@item.id',-1)" style=" margin-right: 10px;" @(item.Quantity == 1  ? "disabled" : "")>
+                                    -
+                                </button><span class="quantity">@item.Quantity</span><button class="increment" onclick="updateQuantity('@item.id',1)" style=" margin-left: 8px;">
+                                    +
+                                </button>
+                            </td>
+                            <td><span class="subTotal">@item.SubTotal</span></td>
+                            <td><button onclick="deleteCart('@item.id')">Remove</button></td>
+
+                        </tr>
+                    }
+                </tbody>
+               
+            </table>
+            <div class="cart-actions">
+                <button type="button" class="btn-" onclick="closeModal('cartDetails')">Close</button>
+                <a asp-controller="Orders" asp-action="Orderspage">Order</a>
+               
+
+                </div>
+        </div>
+    }
+    else
+    {
+        <div cclass="row p5 m-5">
+            <div class="col-md-12 text-center p-5 m5">
+                <h2>No Item selected/h2>
+            </div>
+        </div>
+    }
+
+
+
+</div>
+
+
+
+
+

@@ -1,0 +1,115 @@
+﻿@model IEnumerable<Core.ViewModels.SamplePageViewModel>
+
+
+
+@{
+    ViewData["Title"] = "Shop";
+     Layout = "~/views/shared/_layout.cshtml";
+
+}
+<style>
+    .modal {
+       
+      
+        height: 95%; /* Full height */
+        
+       
+    }
+        .card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+         max-width: 300px; 
+         background-color: black;
+        box-sizing: border-box;
+        }
+        .card img {
+            width: 100%;
+            height: auto;
+            display:block;
+            
+         
+
+        }
+        .card-body {
+            padding: 3px;
+        }
+        .card-title {
+            font-size: 9px;
+            margin-bottom: 10px;
+        color: #D29737;
+        }
+        .card-text {
+            font-size: 7px;
+        color: #ddd;
+        line-height: 1px;
+        margin-bottom: 9px;
+        }
+
+    
+       
+    </style>
+
+
+
+    <div>
+    <h2 class="text-center text-secondary mb-3"><b>Shop</b></h2>
+    </div>
+
+<div class="container mt-4 ">
+    <div class="row">
+        @foreach (var samplePage in Model)
+        {
+        <div class="col-md-3 mb-3">
+            <div class="card" >
+                <img src="@Url.Content($"~/{samplePage.File}")" class="card-img-top" alt="@samplePage.DesignName" style="width:280px; height:185px;" />
+                <div class="card-body">
+                    <h5 class="card-title">@samplePage.DesignName</h5>
+                    <p class="card-text">Material: @samplePage.MaterialName</p>
+                    <p class="card-text">Size: @samplePage.ClothSize</p>
+                    <p class="card-text">Price: @samplePage.Price</p>
+                    <p class="card-text">Number Of Item: @samplePage.NumberOfItems</p>
+                </div>
+                <div class="button">
+                    <button type="submit" class="btn" style="background-color:black; line-height: 1px; font-size: 9px; color:#D29737;">
+                            <b>Order Now</b>
+                    </button>
+
+                    @* <button type="submit" onclick="AddCart(@samplePage.id)" class="btn" style="background-color:black; line-height: 1px; font-size: 9px; color:#D29737; margin-left: 60px;">
+                        <b>Add Cart</b>
+                    </button> *@
+                        @*button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addToCart">
+                            <b>Add Cart</b>
+                    </button> *@
+                    <!-- Button to trigger modal -->
+                    <button type="button" class="btn btn-primary add-to-cart" data-id="@samplePage.SampleId" onclick="AddCart('@samplePage.SampleId'); updateQuantity('@samplePage.SampleId',1)">
+                        <b>Add Cart</b>
+                    </button>
+
+                        @*<button type="button" class="btn btn-primary" onclick="AddCart('@samplePage.SampleId, @User.Identity.Name;')"><b>Add Cart</b></button>*@
+                </div>
+            </div>
+        </div>
+        }
+    </div>
+
+</div>
+
+
+<div class="modal fade" id="cartDetails" tabindex="-1 ">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content text-white">
+            <div class="modal-header">
+                <h5 class="modal-title text-dark"><b> User Cart </b></h5>
+            </div>
+            <div class="modal-body" id="cartContent">
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+   

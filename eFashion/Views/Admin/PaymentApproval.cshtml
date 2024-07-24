@@ -1,0 +1,72 @@
+﻿                        @using static Core.Enum.eFashionEnum
+
+@model IEnumerable<Core.ViewModels.PaymentViewModels>
+
+@{
+    ViewData["Title"] = "PaymentApproval";
+}
+<style>
+    .button-container {
+        display: flex;
+        gap: 10px; /* Space between buttons */
+    }
+
+    .btn-approve {
+        background-color: green;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+    }
+
+    .btn-decline {
+        background-color: red;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+    }
+</style>
+
+<div class="container">
+    <h2>Striped Rows</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>PaidBy</th>
+                <th>ApprovedBy</th>
+                <th>PaymentType</th>
+                <th>OrdersId</th>
+                <th>PaymentDate</th>
+                <th>ApprovedDate</th>
+                <th>PaymentReceipt</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.PaidBy</td>
+                    <td>@item.ApprovedBy</td>
+                    <td>@item.PaymentType</td>
+                    <td>@item.OrdersId</td>
+                    <td>@item.PaymentDate</td>
+                    <td>@item.ApprovedDate</td>
+                    <td>@item.PaymentReceipt</td>
+                    <td>
+                        @if (item.PaymentVerificationStatus == PaymentVerificationStatus.Seen)
+                        {
+                            <button type="submit" class="btn btn-primary">Confirmed</button>
+                        }
+                        else
+                        {
+                            <button type="submit" onclick="paymentApproval(@item.Id)" class="btn btn-secondary">Approve</button>
+                            <button type="submit" onclick="declinePayment(@item.Id)" class="btn btn-secondary">Decline</button>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
