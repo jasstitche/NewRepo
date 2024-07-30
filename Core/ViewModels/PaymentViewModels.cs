@@ -30,5 +30,8 @@ namespace Core.ViewModels
         public string PaymentReceipt { get; set; }
         [NotMapped]
         public IFormFile UploadPayment { get; set; }
+        public OrderStatus OrderStatus { get; set; }
+        public decimal? TotalAmount { get; set; }
     }
 }
+

@@ -16,7 +16,7 @@ namespace Core.Models
         public string UserId { get; set; }
         [ForeignKey("UserId")]
         public virtual ApplicationUser? ApplicationUser { get; set; }
-        public int SampleId { get; set; }
+        public int? SampleId { get; set; }
         [ForeignKey("SampleId")]
         public virtual SamplePage SamplePage { get; set; }
         public int PaymentId {  get; set; }
@@ -32,8 +32,7 @@ namespace Core.Models
         public DateTime? DeliveryEndDate { get; set; }
         public string? PickUpAddress{ get; set; }
         public string? CustomersAddress { get; set; }
-        //public decimal? SubTotal { get; set; }
-        public List<decimal?> SubTotal { get; set; }
+        public decimal? SubTotal { get; set; }
 
         public string? FirstName { get; set; }
         public string? LastName { get; set;}
@@ -45,6 +44,7 @@ namespace Core.Models
         public DateTime PaymentDate { get; set; }
         public DateTime? ApproveDate { get; set; }
         public PaymentVerificationStatus PaymentVerificationStatus { get; set; }
-
+        public int? TotalQuantity { get; set; }
+        public int? Quantity { get; set; }
     }
 }

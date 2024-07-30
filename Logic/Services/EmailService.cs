@@ -59,10 +59,12 @@ namespace Logic.Services
 
 
             };
+            Send(emailMessage);
+
 
         }
 
-		public void Send(EmailMessage emailMessage)
+        public void Send(EmailMessage emailMessage)
         {
             
             var message = new MimeMessage();
@@ -91,6 +93,10 @@ namespace Logic.Services
                 emailClient.AuthenticationMechanisms.Remove("XOAUTH2");
 
 
+                if (string.IsNullOrEmpty(_emailConfiguration.SmtpUsername))
+                    throw new ArgumentNullException(nameof(_emailConfiguration.SmtpUsername), "SMTP Username cannot be null.");
+                if (string.IsNullOrEmpty(_emailConfiguration.SmtpPassword))
+                    throw new ArgumentNullException(nameof(_emailConfiguration.SmtpPassword), "SMTP Password cannot be null.");
 
                 emailClient.Authenticate(_emailConfiguration.SmtpUsername, _emailConfiguration.SmtpPassword);
 

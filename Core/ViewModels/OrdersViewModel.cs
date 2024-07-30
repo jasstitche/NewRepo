@@ -16,7 +16,7 @@ namespace Core.ViewModels
         public string UserId { get; set; }
         [ForeignKey("UserId")]
         public virtual ApplicationUser? ApplicationUser { get; set; }
-        public int SampleId { get; set; }
+        public int? SampleId { get; set; }
         [ForeignKey("SampleId")]
         public virtual SamplePage SamplePage { get; set; }
         public int? PaymentId { get; set; }
@@ -33,11 +33,11 @@ namespace Core.ViewModels
         public string? PickUpAddress { get; set; }
         public string? CustomersAddress { get; set; }
         public int? TotalQuantity { get; set; }
-        public int? SelectedPaymentType { get; set; }
+       
         public List<string?> DesignName { get; set; }
         public List<int?> Quantity { get; set; }
         public List<decimal?> SubTotal { get; set; }
-
+        [NotMapped]
         public IFormFile UploadPayment { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }

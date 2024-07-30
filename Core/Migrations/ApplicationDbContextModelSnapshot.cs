@@ -138,7 +138,7 @@ namespace Core.Migrations
                     b.Property<DateTime>("PaymentDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("PaymentId")
+                    b.Property<int>("PaymentId")
                         .HasColumnType("int");
 
                     b.Property<int>("PaymentType")
@@ -153,15 +153,20 @@ namespace Core.Migrations
                     b.Property<string>("PickUpAddress")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("Quantity")
+                        .HasColumnType("int");
+
                     b.Property<int>("SampleId")
                         .HasColumnType("int");
 
-                    b.Property<string>("SubTotal")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<decimal?>("SubTotal")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal?>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("TotalQuantity")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -187,11 +192,13 @@ namespace Core.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ApprovedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime?>("ApprovedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("OrderStatus")
+                        .HasColumnType("int");
 
                     b.Property<int?>("OrdersId")
                         .HasColumnType("int");
@@ -289,13 +296,13 @@ namespace Core.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a8d4fb2c-946a-41b7-9a4d-e64d7085e39d",
+                            Id = "874b47e6-5263-43ee-93a9-889cf4aafe7f",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "50b25958-a60f-42c6-b035-ef5de34451e4",
+                            Id = "5e0d8791-01ff-422e-aa0f-f3eda2057add",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -531,7 +538,9 @@ namespace Core.Migrations
                 {
                     b.HasOne("Core.Models.Payment", "Payment")
                         .WithMany()
-                        .HasForeignKey("PaymentId");
+                        .HasForeignKey("PaymentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Core.Models.SamplePage", "SamplePage")
                         .WithMany()
@@ -556,9 +565,7 @@ namespace Core.Migrations
                 {
                     b.HasOne("Core.Models.ApplicationUser", "ApplicationsUser")
                         .WithMany()
-                        .HasForeignKey("ApprovedBy")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ApprovedBy");
 
                     b.HasOne("Core.Models.Orders", "Orders")
                         .WithMany()

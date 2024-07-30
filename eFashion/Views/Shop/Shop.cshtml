@@ -81,11 +81,12 @@
                             <b>Add Cart</b>
                     </button> *@
                     <!-- Button to trigger modal -->
-                    <button type="button" class="btn btn-primary add-to-cart" data-id="@samplePage.SampleId" onclick="AddCart('@samplePage.SampleId'); updateQuantity('@samplePage.SampleId',1)">
-                        <b>Add Cart</b>
-                    </button>
-
-                        @*<button type="button" class="btn btn-primary" onclick="AddCart('@samplePage.SampleId, @User.Identity.Name;')"><b>Add Cart</b></button>*@
+                        <button type="button" class="btn" style="background-color:black; line-height: 1px; font-size: 9px; color:#D29737; margin-left: 60px;" onclick="AddCart('@samplePage.SampleId')">
+                            <b>Add Cart</b>
+                        </button>
+                       @*  <button type="button" class="btn" style="background-color:black; line-height: 1px; font-size: 9px; color:#D29737;" onclick="deleteSample('@samplePage.SampleId')">
+                            <b>Delete</b>
+                        </button>  *@
                 </div>
             </div>
         </div>

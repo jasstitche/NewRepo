@@ -3,6 +3,159 @@
 
 // Write your JavaScript code.
 
+//function registration() {
+//    debugger;
+//    var data = {
+//        FirstName: $("#FirstName").val(),
+//        LastName: $("#LastName").val(),
+//        PhoneNumber: $("#PhoneNumber").val(),
+//        Gender: $("#Gender").val(),
+//        Address: $("#Address").val(),
+//        Email: $("#Email").val(),
+//        Password: $("#Password").val(),
+//        ConfirmPassword: $("#ConfirmPassword").val()
+//    };
+
+//    // Validate inputs before making AJAX request
+//    let isValid = true;
+//    $('.text-danger').text(''); // Clear previous error messages
+
+//    if (!data.FirstName) {
+//        $('#FirstNameError').text('First Name is required');
+//        isValid = false;
+//    }
+//    if (!data.LastName) {
+//        $('#LastNameError').text('Last Name is required');
+//        isValid = false;
+//    }
+//    if (!data.PhoneNumber) {
+//        $('#PhoneNumberError').text('Phone Number is required');
+//        isValid = false;
+//    }
+//    if (!data.Gender) {
+//        $('#GenderError').text('Gender is required');
+//        isValid = false;
+//    }
+//    if (!data.Address) {
+//        $('#AddressError').text('Address is required');
+//        isValid = false;
+//    }
+//    if (!data.Email) {
+//        $('#EmailError').text('Email is required');
+//        isValid = false;
+//    }
+//    if (!data.Password) {
+//        $('#PasswordError').text('Password is required');
+//        isValid = false;
+//    }
+//    if (data.Password !== data.ConfirmPassword) {
+//        $('#ConfirmPasswordError').text('Passwords do not match');
+//        isValid = false;
+//    }
+
+//    if (!isValid) {
+//        return;
+//    }
+
+//    $.ajax({
+//        type: 'POST',
+//        url: '/Account/Register',
+//        data: JSON.stringify(data),
+//        contentType: 'application/json; charset=utf-8',
+//        dataType: 'json',
+//        success: function (result) {
+//            console.log("AJAX success:", result);
+//            if (result.success) {
+//                alert('Registration successful!');
+//                window.location.href = '/Account/Login';
+//            } else {
+//                Object.keys(result.errors).forEach(function (key) {
+//                    $('#' + key + 'Error').text(result.errors[key]);
+//                });
+//            }
+//        },
+//        error: function (ex) {
+//            $('#validationSummary').text("Error occurred. Please try again.");
+//        }
+//    });
+//}
+
+function registration() {
+    debugger;
+    var data = {
+        FirstName: $("#FirstName").val(),
+        LastName: $("#LastName").val(),
+        PhoneNumber: $("#PhoneNumber").val(),
+        Gender: $("#Gender").val(),
+        Address: $("#Address").val(),
+        Email: $("#Email").val(),
+        Password: $("#Password").val(),
+        ConfirmPassword: $("#ConfirmPassword").val()
+    };
+
+    // Validate inputs before making AJAX request
+    let isValid = true;
+    $('.text-danger').text(''); // Clear previous error messages
+
+    if (!data.FirstName) {
+        $('#FirstNameError').text('First Name is required');
+        isValid = false;
+    }
+    if (!data.LastName) {
+        $('#LastNameError').text('Last Name is required');
+        isValid = false;
+    }
+    if (!data.PhoneNumber) {
+        $('#PhoneNumberError').text('Phone Number is required');
+        isValid = false;
+    }
+    if (!data.Gender) {
+        $('#GenderError').text('Gender is required');
+        isValid = false;
+    }
+    if (!data.Address) {
+        $('#AddressError').text('Address is required');
+        isValid = false;
+    }
+    if (!data.Email) {
+        $('#EmailError').text('Email is required');
+        isValid = false;
+    }
+    if (!data.Password) {
+        $('#PasswordError').text('Password is required');
+        isValid = false;
+    }
+    if (data.Password !== data.ConfirmPassword) {
+        $('#ConfirmPasswordError').text('Passwords do not match');
+        isValid = false;
+    }
+
+    if (!isValid) {
+        return;
+    }
+
+    $.ajax({
+        type: 'POST',
+        url: '/Account/Register',
+        data: JSON.stringify(data),
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        success: function (result) {
+            debugger;
+            
+            if (result.isError) {
+                newErrorAlert(result.msg)
+                $('#validationSummary').text(result.msg);
+            } else {
+                var url = '/Account/Login';
+                successAlertWithRedirect(result.msg, url);
+            }
+        },
+        error: function (ex) {
+            $('#validationSummary').text("Error occurred. Please try again.");
+        }
+    });
+}
 
 function AddCart(sampleId) {
     debugger;
@@ -23,7 +176,9 @@ function AddCart(sampleId) {
                 $('#cartCountForAddedCart').text(result.cartCount);
             }
             else {
-                errorAlert(result.msg)
+                var url = '/Shop/Shop';
+                newErrorAlert(result.msg, url);
+                //newErrorAlert(result.msg)
             }
         },
         error: function (ex) {
@@ -49,11 +204,12 @@ function viewCart(email) {
                 $('#cartContent').html(result);
                 $('#cartDetails').modal('show');
             } else {
-                errorAlert('Failed to load cart items.');
+                newErrorAlert('Failed to load cart items.');
             }
         },
         error: function (ex) {
-            errorAlert("Error occured try again");
+            debugger
+            newErrorAlert("Error occured try again");
         }
     })
 }
@@ -72,7 +228,7 @@ function deleteCart(id) {
             if (!result.isError) {
                 viewCart(result.appUser.email)
             } else {
-                errorAlert('Failed to delete cart items.');
+                newErrorAlert('Failed to delete cart items.');
             }
         },
         error: function (ex) {
@@ -84,44 +240,48 @@ function deleteCart(id) {
 function updateQuantity(id, change) {
     debugger;
     $.ajax({
-        type: 'Post',
-        //dataType: 'json',
+        type: 'POST',
         url: '/Cart/UpdateQuantity',
         data: {
             id: id,
             change: change
         },
         success: function (result) {
-            debugger
+            debugger;
+            var row = $('[data-item-id="' + id + '"]');
+            var decrementspan = row.find('.decrement');
+
             if (!result.isError) {
-                var row = $('[data-item-id = "'+ id + '"]');
                 var quantitySpan = row.find('.quantity');
                 quantitySpan.text(result.quantity);
                 var subTotalspan = row.find('.subTotal');
                 subTotalspan.text(result.subTotal);
-                var decrementspan = row.find('.decrement');
-                if (result.quantity == 1)
-                {
-                   decrementspan.attr("disabled", 'disabled');
 
+                if (result.quantity == 1) {
+                    decrementspan.attr("disabled", 'disabled');
+                } else {
+                    decrementspan.removeAttr('disabled');
                 }
+
+                viewCart(result.appUser.email);
             } else {
                 decrementspan.removeAttr('disabled');
+                var url = '/Shop/Shop';
+                newErrorAlert( result.msg, url);
             }
-            viewCart(result.appUser.email)
         },
-
         error: function (ex) {
-            errorAlert("Error occured try again");
+            newErrorAlert("Error occurred, try again");
         }
-    })
+    });
 }
+
 
 
 function checkout() {
     var paymentTypeId = $('#PaymentTypeId').val();
 
-    debugger
+    debugger;
     $.ajax({
         type: 'GET',
         url: '/Cart/GetTotalAmount',
@@ -140,25 +300,29 @@ function checkout() {
                 $('#companyBankName').text(result.getCompanySettings.bankName);
                 $('#companyAddress').text(result.getCompanySettings.companyAddress);
                 $('#deliveryAddress').text(result.getCompanySettings.deliveryAddress);
-                $('#deliveryFee').text(result.getCompanySettings.deliveryFee);
+                if (result.paymentTypeId == '1') {
+                    $('#deliveryFee').text(result.getCompanySettings.deliveryFee);
+
+                }
                 //$('#selectedPaymentType').text(result.paymentTypeId);
-                var selectedPaymentType = $('#PaymentTypeId').val();
-                $('#paymentTypeId').val(paymentTypeId);
+                //var selectedPaymentType = $('#PaymentTypeId').val();
+                $('#transferPaymentTypeId').val(result.paymentTypeId);
+                $('#cashPaymentTypeId').val(result.paymentTypeId);
                 $('#totalAmountToPay').val(result.totalAmountToPay);
 
 
-                if (selectedPaymentType == '1') {
+                if (result.paymentTypeId == '1') {
 
                     $('#transferModal').modal('show');
-                } else if (selectedPaymentType == '2') {
+                } else if (result.paymentTypeId == '2') {
                     $('#cashModal').modal('show');
                 }
             } else {
-                errorAlert("Error occurred while fetching the total amount. Please try again.");
+                newErrorAlert("Error occurred while fetching the total amount. Please try again.");
             }
         },
         error: function (ex) {
-            errorAlert("Error occurred. Please try again.");
+            newErrorAlert("Error occurred. Please try again.");
         }
     });
 }
@@ -186,7 +350,7 @@ function makePayment() {
                 });
 
             } else {
-                errorAlert("Error occurred while fetching the total amount. Please try again.");
+                newErrorAlert("Error occurred while fetching the total amount. Please try again.");
             }
         },
         error: function (ex) {
@@ -260,10 +424,11 @@ function paymentApproval(paymentId) {
         success: function (result) {
             if (!result.isError) {
                 debugger;
-                successAlert(result.msg);
+                newSuccessAlert(result.msg);
+                //location.reload();
             }
             else {
-                errorAlert(result.msg)
+                newErrorAlert(result.msg)
             }
         },
         error: function (ex) {
@@ -284,10 +449,11 @@ function declinePayment(paymentId) {
         success: function (result) {
             if (!result.isError) {
                 debugger;
-                successAlert(result.msg);
+                newSuccessAlert(result.msg);
+                //location.reload();
             }
             else {
-                errorAlert(result.msg)
+                newErrorAlert(result.msg)
             }
         },
         error: function (ex) {
@@ -296,3 +462,76 @@ function declinePayment(paymentId) {
     })
 }
 
+function shipped(paymentId) {
+    debugger;
+    $.ajax({
+        type: 'Post',
+        dataType: 'Json',
+        url: '/Orders/Shipped',
+        data: {
+            paymentId: paymentId
+        },
+        success: function (result) {
+            if (!result.isError) {
+                debugger;
+                newSuccessAlert(result.msg);
+                //location.reload();
+            }
+            else {
+                newErrorAlert(result.msg)
+            }
+        },
+        error: function (ex) {
+            errorAlert("Error occured try again");
+        }
+    })
+}
+function Received(paymentId) {
+    debugger;
+    $.ajax({
+        type: 'Post',
+        dataType: 'Json',
+        url: '/Admin/Received',
+        data: {
+            paymentId: paymentId
+        },
+        success: function (result) {
+            if (!result.isError) {
+                debugger;
+                newSuccessAlert(result.msg);
+                //location.reload();
+            }
+            else {
+                newErrorAlert(result.msg)
+            }
+        },
+        error: function (ex) {
+            errorAlert("Error occured try again");
+        }
+    })
+}
+
+function deleteSample(id) {
+    debugger;
+    $.ajax({
+        type: 'Post',
+        //dataType: 'json',
+        url: '/Shop/DeleteSampleById',
+        data: {
+            id: id,
+        },
+        success: function (result) {
+            debugger;
+            if (!result.isError) {
+                newSuccessAlert(result.msg);
+                //location.reload();
+            }
+            else {
+                newErrorAlert('Failed to delete Sample items.');
+            }
+        },
+        error: function (ex) {
+            errorAlert("Error occured try again");
+        }
+    })
+}

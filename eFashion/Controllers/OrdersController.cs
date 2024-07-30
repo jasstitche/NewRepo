@@ -6,6 +6,7 @@ using Logic.IHelpers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using System.Linq;
 using System.Security.Claims;
 
@@ -37,19 +38,23 @@ namespace eFashion.Controllers
                                                   .Include(c => c.SamplePage)
                                                   .Include(c => c.ApplicationUser)
                                                   .Include(c => c.Payment)
+                                                  .OrderByDescending(c => c.OrderDate)
+                                                  
                                                   .Select(order => new OrdersViewModel
                                                   {
                                                       FirstName = order.FirstName,
                                                       LastName = order.LastName,
                                                       UserId = order.UserId,
                                                       SampleId = order.SampleId,
-                                                      SubTotal = order.SubTotal, // Handling List<decimal?>
+                                                      SubTotal = new List<decimal?> { order.SubTotal }, // Handling List<decimal?>
                                                       OrderStatus = order.OrderStatus,
                                                       PaymentId = order.Payment.Id,
                                                       OrderDate = order.OrderDate,
                                                       TotalAmount = order.TotalAmount ?? 0, // Handle nullable
                                                       Payment = order.Payment,
                                                       PaymentVerificationStatus = order.Payment.PaymentVerificationStatus,
+                                                      PaymentTypeId = order.PaymentType,
+                                                      DeliveryStartDate = order.DeliveryStartDate,
                                                       //TotalQuantity = order
                                                   })
                                                   .ToListAsync(); // Await the asynchronous call
@@ -75,8 +80,7 @@ namespace eFashion.Controllers
             {
                 return View("Error", new { message = "Cart is empty" });
             }
-            var getCompanySettings = _adminHelper.GetCompanySetting().Result;
-            var deliveryFee = getCompanySettings?.DeliveryFee != null ? Convert.ToDecimal(getCompanySettings.DeliveryFee) : 0;
+           
 
 
             var model = new OrdersViewModel()
@@ -86,7 +90,7 @@ namespace eFashion.Controllers
                 Quantity = cartItems.Select(c => c.Quantity).ToList(),
                 TotalQuantity = cartItems.Sum(c => c.Quantity),
                 SubTotal = cartItems.Select(c => c.SubTotal).ToList(),
-                TotalAmountToPay = cartItems.Sum(c => c.SubTotal) + deliveryFee,
+                TotalAmountToPay = cartItems.Sum(c => c.SubTotal),
           
                 //CompanySettings = getCompanySettings
             };
@@ -106,9 +110,39 @@ namespace eFashion.Controllers
             var checkIfPaid = _userHelper.CheckIfPendingPayment(userId);
             if (checkIfPaid)
             {
-                return View("Has made payment");
+                TempData["ErrorMessage"] = "You already have a pending order.";
+                return RedirectToAction("Orderspage");
             }
             var savePaymentDetials = await _userHelper.SavePaymentDetails( viewModel, userId,  unqueFileName);
+
+            if (savePaymentDetials)
+            {
+                TempData["SuccessMessage"] = "Order details saved successfully.";
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Failed to save order details. Please try again.";
+                return View(viewModel);
+            }
+            //return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> ConfirmCashPayment(OrdersViewModel viewModel)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            //string unqueFileName = String.Empty;
+            //if (viewModel.UploadPayment != null)
+            //{
+            //    unqueFileName = UploadedFile(viewModel.UploadPayment);
+            //}
+            var checkIfPaid = _userHelper.CheckIfPendingPayment(userId);
+            if (checkIfPaid)
+            {
+                return RedirectToAction("Has made payment");
+            }
+            var savePaymentDetials = await _userHelper.SaveCashPaymentDetails(viewModel, userId);
 
             if (savePaymentDetials)
             {
@@ -121,7 +155,6 @@ namespace eFashion.Controllers
             }
             //return RedirectToAction("Index");
         }
-
         public string UploadedFile(IFormFile filesSender)
         {
             string uniqueFileName = string.Empty;
@@ -155,31 +188,44 @@ namespace eFashion.Controllers
 
             return null;
         }
+        [HttpPost]
+        public async Task<JsonResult> Shipped(int paymentId)
+        {
+            var responseMsg = string.Empty;
+            try
+            {
+                if (paymentId != 0)
+                {
+                    var userId = _adminHelper.GetCurrentUserId(User.Identity.Name);
+                    if (userId == null)
+                    {
+                        return Json(new { isError = true, msg = "User not found" });
+                    }
 
-        //[HttpGet]
-        //public JsonResult Orderspage()
-        //{
-        //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        //    var cartItems = _context.Carts.Where(c => c.AppUser.Id == userId && !c.Deleted && c.Active).Include(c => c.SamplesPage).Include(c => c.AppUser).ToList();
-        //    ViewBag.PaymentType = _userHelper.GetDropDownEnumsList();
-        //    if (cartItems == null || !cartItems.Any())
-        //    {
-        //       return Json(new { isError = true, message = "Cart is empty" });
-        //    }
-        //    var model = new OrdersViewModel()
-        //    {
-        //        TotalAmount = cartItems.Sum(c => c.SubTotal),
-        //        DesignName = cartItems.Select(c => c.SamplesPage.DesignName).ToList(),
-        //        Quantity = cartItems.Select(c => c.Quantity).ToList(),
-        //        TotalQuantity = cartItems.Sum(c => c.Quantity),
-        //    };
+                    var checkIfReceivedOrder = _userHelper.CheckIfReceived(paymentId, userId);
+                    if (checkIfReceivedOrder)
+                    {
+                        return Json(new { isError = true, msg = "This user has received the order before" });
+                    }
 
-        //    return Json(new { isError = false,
-        //        totalAmount = model.TotalAmount,
-        //        designName = model.DesignName,
-        //        quantity = model.Quantity,
-        //        totalQuantity = model.TotalQuantity
-        //    });
-        //}
+                    var updateOrder = _userHelper.UpdateOrder(paymentId, userId);
+                    if (updateOrder)
+                    {
+                        return Json(new { isError = false, msg = "Order received!" });
+                    }
+                    else
+                    {
+                        return Json(new { isError = true, msg = "Order update failed" });
+                    }
+                }
+                return Json(new { isError = true, msg = "Invalid payment ID" });
+            }
+            catch (Exception ex)
+            {
+
+                return Json(new { isError = true, msg = "An error occurred: " + ex.Message });
+            }
+        }
+
     }
 }

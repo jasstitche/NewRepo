@@ -8,8 +8,9 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+
 <div class="container">
-    <h2 class="text-center text-secondary mb-3"><b>Order Details</b></h2>
+    <h2 class="text-center text-secondary mb-3"><b>Order Details</b></h2>    
     <div class="table-responsive">
         <table class="table table-bordered table-striped">
             <thead class="thead-dark">
@@ -21,36 +22,55 @@
                     <th scope="col">Payment Type</th>
                     <th scope="col">Payment Verification Status</th>
                     <th scope="col">Order Date</th>
+                    <th scope="col">Delivery Date</th>
                     <th scope="col">Subtotal</th>
                     <th scope="col">Total Amount</th>
                 </tr>
             </thead>
             <tbody>
+                @{
+                    bool hasShippedOrder = Model.Any(order => order.OrderStatus == OrderStatus.Shipped);
+                }
+
+                @if (hasShippedOrder)
+                {
+                    <div>
+                        <p>
+                            <b>If you have received the order, please press shipped to change order status to received.</b>
+                        </p>
+                    </div>
+                }
                 @foreach (var orders in Model)
                 {
+
                     <tr>
 
                         <td>@(orders.FirstName + " " + orders.LastName)</td>
                         <td>@orders.SampleId</td>
                         @* <td>@orders.TotalQuantity</td> *@
                         <td>
-                            <button type="submit" class="btn btn-warning"> @orders.OrderStatus</button>
+                            @if(orders.OrderStatus == OrderStatus.Shipped)
+                            {
+                                <button type="submit" onclick="shipped(@orders.Payment.Id)" class="btn btn-warning"> @orders.OrderStatus</button>
+                            }
+                            else if (orders.OrderStatus == OrderStatus.Cancelled || orders.OrderStatus == OrderStatus.Completed)
+                            {
+                                <button type="submit" class="btn btn-warning"> @orders.OrderStatus</button>
+                            }
+                            else
+                            {
+                                <button type="submit" class="btn btn-warning"> @orders.OrderStatus</button>
+                            }
+
                         </td>
                         <td>@orders.PaymentTypeId</td>
                         <td>
-@*                             @if(orders.Payment.PaymentVerificationStatus == PaymentVerificationStatus.Sent)
-                            {
-                                <button type="submit" class="btn btn-warning"> Pending</button>
 
-                            }
-                            else
-                            { *@
                                 <button type="submit" class="btn btn-primary"> @orders.PaymentVerificationStatus</button>
 
-                            @* } *@
-@*                             @orders.Payment.PaymentVerificationStatus
- *@                         </td>
+                        </td>
                         <td>@orders.OrderDate.ToString("yyyy-MM-dd")</td>
+                        <td>@orders.DeliveryStartDate?.ToString("yyyy-MM-dd")</td>
                         <td>
                             @foreach (var subTotal in orders.SubTotal)
                             {

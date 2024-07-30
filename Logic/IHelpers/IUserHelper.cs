@@ -18,5 +18,9 @@ namespace Logic.IHelpers
         bool CheckIfPendingPayment(string userId);
         bool CheckIfApproved(int paymentId);
         bool CheckUserRegPayment(string userId);
+        bool UpdateOrder(int paymentId, string userId);
+        bool CheckIfReceived(int paymentId, string userId);
+        bool UpdateOrderToCompleted(int paymentId, string userId);
+        Task<bool> SaveCashPaymentDetails(OrdersViewModel ordersViewModel, string userId);
     }
 }

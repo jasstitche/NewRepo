@@ -19,6 +19,14 @@
         cursor: pointer;
     }
 
+    .btn-confirmed {
+        background-color: green;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+    }
+
     .btn-decline {
         background-color: red;
         color: white;
@@ -29,17 +37,18 @@
 </style>
 
 <div class="container">
-    <h2>Striped Rows</h2>
+    <h2>Payment Approval</h2>
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>PaidBy</th>
-                <th>ApprovedBy</th>
-                <th>PaymentType</th>
-                <th>OrdersId</th>
-                <th>PaymentDate</th>
-                <th>ApprovedDate</th>
-                <th>PaymentReceipt</th>
+                <th>Paid By</th>
+                <th>Approved By</th>
+                <th>Payment Type</th>
+                <th>Orders Id</th>
+                <th>Payment Date</th>
+                <th>Approved Date</th>
+                <th>Payment Receipt</th>
+                <th>Order Status</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -55,14 +64,31 @@
                     <td>@item.ApprovedDate</td>
                     <td>@item.PaymentReceipt</td>
                     <td>
-                        @if (item.PaymentVerificationStatus == PaymentVerificationStatus.Seen)
+                        @if (item.OrderStatus == OrderStatus.Recieved)
                         {
-                            <button type="submit" class="btn btn-primary">Confirmed</button>
+                            <button type="submit" onclick="Received(@item.Id)" class="btn btn-warning"> @item.OrderStatus</button>
                         }
                         else
                         {
-                            <button type="submit" onclick="paymentApproval(@item.Id)" class="btn btn-secondary">Approve</button>
-                            <button type="submit" onclick="declinePayment(@item.Id)" class="btn btn-secondary">Decline</button>
+                            <button type="submit" class="btn btn-warning"> @item.OrderStatus</button>
+                        }
+                    </td>
+                    <td>
+                        @if (item.PaymentVerificationStatus == PaymentVerificationStatus.Seen || item.PaymentVerificationStatus == PaymentVerificationStatus.Completed)
+                        {
+                            <button type="submit" class="btn btn-confirmed">Confirmed</button>
+                        }
+                        else if (item.PaymentVerificationStatus == PaymentVerificationStatus.Declined)
+                        {
+                            <button type="submit" class="btn btn-confirmed">Declined</button>
+
+                        }
+                        else
+                        {
+                            <div class="button-container">
+                            <button type="submit" onclick="paymentApproval(@item.Id)" class="btn btn-approve">Approve</button>
+                            <button type="submit" onclick="declinePayment(@item.Id)" class="btn btn-decline">Decline</button>
+                            </div>
                         }
                     </td>
                 </tr>

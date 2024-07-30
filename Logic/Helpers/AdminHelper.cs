@@ -182,11 +182,11 @@ namespace Logic.Helpers
                 cart = new Cart
                 {
                     SampleId = samplePage.id,
-                    AppUser = cart.AppUser,
+                    //AppUser = cart.AppUser,
                     UserId = userId,
                     Quantity = change,
                     SubTotal = samplePage.Price,
-                    SamplesPage = samplePage,
+                    //SamplesPage = samplePage,
                 };
                 _context.Carts.Add(cart);
             }
@@ -198,38 +198,156 @@ namespace Logic.Helpers
         {
             try
             {
+                var companySettings = GetCompanySetting();
+                var existingSettings = _context.CompanySetting.FirstOrDefault();
+
                 if (paymentId != 0)
                 {
-                    var regApprove = _context.Payments.Where(x => x.Id == paymentId && x.PaymentVerificationStatus == PaymentVerificationStatus.Sent).Include(x => x.ApplicationsUser).Include(x => x.Orders).FirstOrDefault();
-                    if (regApprove != null)
+
+                        var paymentApprove = _context.Payments.Where(x => x.Id == paymentId && x.PaymentVerificationStatus == PaymentVerificationStatus.Sent).Include(x => x.ApplicationsUser).Include(x => x.Orders).FirstOrDefault();
+                        if (paymentApprove != null && paymentApprove.PaymentType == PaymentType.Transfer)
+                        {
+
+                            paymentApprove.PaymentVerificationStatus = PaymentVerificationStatus.Seen;
+                            paymentApprove.OrderStatus = OrderStatus.Shipped;
+                            paymentApprove.ApprovedBy = loggedInUser;
+                            paymentApprove.ApprovedDate = DateTime.Now;
+                            _context.Update(paymentApprove);
+                            _context.SaveChanges();
+
+
+                            DateTime? pickUpDate = null;
+
+                            if (paymentApprove.ApprovedDate.HasValue)
+                            {
+                                // Assuming you want to add a fixed number of 5 days
+                                int daysToAdd = 5;
+                                pickUpDate = paymentApprove.ApprovedDate.Value.AddDays(daysToAdd);
+                            }
+
+
+                            var updateUserOrder = _context.Orders.Where(x => x.UserId == paymentApprove.PaidBy && x.Payment.Id == paymentId).FirstOrDefault();
+                            if (updateUserOrder != null)
+                            {
+                                updateUserOrder.OrderStatus = OrderStatus.Shipped;
+                                updateUserOrder.ApproveDate = paymentApprove.ApprovedDate;
+                                updateUserOrder.PaymentVerificationStatus = paymentApprove.PaymentVerificationStatus;
+                                updateUserOrder.DeliveryStartDate = pickUpDate;
+                                _context.Update(updateUserOrder);
+                                _context.SaveChanges();
+
+
+                                var sampleIds = _context.Carts
+                                    .Where(c => c.UserId == paymentApprove.PaidBy && !c.Deleted)
+                                    .Select(c => c.SampleId)
+                                    .Distinct()
+                                    .ToList();
+
+                                // Update cart items in bulk
+                                var cartsToUpdate = _context.Carts
+                                    .Where(c => c.UserId == paymentApprove.PaidBy && sampleIds.Contains(c.SampleId))
+                                    .ToList();
+
+                                if (cartsToUpdate.Any())
+                                {
+                                    foreach (var cart in cartsToUpdate)
+                                    {
+                                        cart.Active = false;
+                                        cart.Deleted = true;
+                                    }
+                                    _context.Carts.UpdateRange(cartsToUpdate);
+                                    _context.SaveChanges();
+                                }
+
+
+                                if (paymentApprove.Orders?.EmailAddress != null)
+                                {
+
+                                    string toEmail = paymentApprove.Orders?.EmailAddress;
+                                    string subject = "Hooray!!!, Payment Approved ";
+                                    string message = $"Hello <b>{updateUserOrder.FirstName},</b><br> " +
+                                                     $"Jas_p Stitches has approved your payment of ₦<b>{paymentApprove.Orders?.TotalAmount.ToString()}</b>.<br> " +
+                                                     $"We at Jas_p Stitches appreciate your patronage.<br> " +
+                                                     $"Your order will be ready for pickup on <b>{pickUpDate:dddd, MMMM dd, yyyy}</b>.<br> " +
+                                                     "We look forward to your continued patronage.<br> " +
+                                                     "Thank you!!!";
+
+                                    _emailService.SendEmail(toEmail, subject, message);
+                                    return true;
+
+                                }
+                            }
+
+                        }
+                    else if (paymentId != null && paymentApprove.PaymentType == PaymentType.Cash)
                     {
+                        paymentApprove.PaymentVerificationStatus = PaymentVerificationStatus.Completed;
+                        paymentApprove.OrderStatus = OrderStatus.Completed;
+                        paymentApprove.ApprovedBy = loggedInUser;
+                        paymentApprove.ApprovedDate = DateTime.Now;
+                        _context.Update(paymentApprove);
+                        _context.SaveChanges();
 
-                        regApprove.PaymentVerificationStatus = PaymentVerificationStatus.Seen;
-                        regApprove.ApprovedBy = loggedInUser;
-                        regApprove.ApprovedDate = DateTime.Now;
-                        _context.Update(regApprove);
+
+                        DateTime? pickUpDate = null;
+
+                        if (paymentApprove.ApprovedDate.HasValue)
+                        {
+                            // Assuming you want to add a fixed number of 5 days
+                            int daysToAdd = 5;
+                            pickUpDate = paymentApprove.ApprovedDate.Value.AddDays(daysToAdd);
+                        }
 
 
-
-                        var updateUserOrder = _context.Orders.Where(x => x.UserId == regApprove.ApplicationsUser.Id && x.Payment.Id == paymentId).FirstOrDefault();
+                        var updateUserOrder = _context.Orders.Where(x => x.UserId == paymentApprove.PaidBy && x.Payment.Id == paymentId).FirstOrDefault();
                         if (updateUserOrder != null)
                         {
-                            updateUserOrder.OrderStatus = OrderStatus.Completed;
-                            updateUserOrder.ApproveDate = DateTime.Now;
+                            updateUserOrder.OrderStatus = paymentApprove.OrderStatus;
+                            updateUserOrder.ApproveDate = paymentApprove.ApprovedDate;
+                            updateUserOrder.PaymentVerificationStatus = paymentApprove.PaymentVerificationStatus;
+                            updateUserOrder.DeliveryStartDate = pickUpDate;
                             _context.Update(updateUserOrder);
                             _context.SaveChanges();
 
-                            if (regApprove.ApplicationsUser?.Email != null)
-                            {
-                                string toEmail = regApprove.ApplicationsUser?.Email;
-                                string subject = "Hooray!!!, Payment Approved ";
-                                string message = "Hello " + "<b>" + regApprove.ApplicationsUser?.UserName + ", </b>" + "<br>		Jas_p Stitches	 has approved your payment of ₦" + " <b> " + regApprove.Orders?.TotalAmount.ToString() + ". </b> <br> " +
 
-                               " we	at Jas_p Stitches	Appreciate your patronage." +
-                               " <br> we look forward for more patronage. <br> " +
-                               " Thank you !!! ";
+                            var sampleIds = _context.Carts
+                                .Where(c => c.UserId == paymentApprove.PaidBy && !c.Deleted)
+                                .Select(c => c.SampleId)
+                                .Distinct()
+                                .ToList();
+
+                            // Update cart items in bulk
+                            var cartsToUpdate = _context.Carts
+                                .Where(c => c.UserId == paymentApprove.PaidBy && sampleIds.Contains(c.SampleId))
+                                .ToList();
+
+                            if (cartsToUpdate.Any())
+                            {
+                                foreach (var cart in cartsToUpdate)
+                                {
+                                    cart.Active = false;
+                                    cart.Deleted = true;
+                                }
+                                _context.Carts.UpdateRange(cartsToUpdate);
+                                _context.SaveChanges();
+                            }
+
+
+                            if (paymentApprove.Orders?.EmailAddress != null)
+                            {
+
+                                string toEmail = paymentApprove.Orders?.EmailAddress;
+                                string subject = "Hooray!!!, Payment Approved ";
+                                string message = $"Hello <b>{updateUserOrder.FirstName},</b><br> " +
+                                                 $"Jas_p Stitches has approved your payment of ₦<b>{paymentApprove.Orders?.TotalAmount.ToString()}</b>.<br> " +
+                                                 $"We at Jas_p Stitches appreciate your patronage.<br> " +
+                                                 $"Your order will be ready for pickup on <b>{pickUpDate:dddd, MMMM dd, yyyy}</b>.<br> " +
+                                                 "We look forward to your continued patronage.<br> " +
+                                                 "Thank you!!!";
+
                                 _emailService.SendEmail(toEmail, subject, message);
                                 return true;
+
                             }
                         }
 
@@ -249,26 +367,52 @@ namespace Logic.Helpers
             {
                 if (paymentId != 0)
                 {
-                    var regDecline = _context.Payments
+                    var paymentDecline = _context.Payments
                                              .Where(x => x.Id == paymentId && x.PaymentVerificationStatus == PaymentVerificationStatus.Sent)
                                              .Include(x => x.ApplicationsUser)
                                              .Include(x => x.Orders)
                                              .FirstOrDefault();
-                    if (regDecline != null)
+                    if (paymentDecline != null)
                     {
-                        regDecline.PaymentVerificationStatus = PaymentVerificationStatus.Declined;
-                        regDecline.ApprovedBy = loggedInUser;
-                        regDecline.ApprovedDate = DateTime.Now;
-                        _context.Update(regDecline);
-
+                        paymentDecline.OrderStatus = OrderStatus.Cancelled;
+                        paymentDecline.PaymentVerificationStatus = PaymentVerificationStatus.Declined;
+                        paymentDecline.ApprovedBy = loggedInUser;
+                        paymentDecline.ApprovedDate = DateTime.Now;
+                        _context.Update(paymentDecline);
                         _context.SaveChanges();
 
-                        if (!string.IsNullOrEmpty(regDecline.ApplicationsUser?.Email))
+                        var updateUserOrder = _context.Orders.Where(x => x.UserId == paymentDecline.PaidBy && x.Payment.Id == paymentId).FirstOrDefault();
+                        if (updateUserOrder != null)
                         {
-                            string toEmail = regDecline.ApplicationsUser.Email;
+                            updateUserOrder.OrderStatus = OrderStatus.Cancelled;
+                            updateUserOrder.ApproveDate = paymentDecline.ApprovedDate;
+                            updateUserOrder.PaymentVerificationStatus = paymentDecline.PaymentVerificationStatus;
+                            _context.Update(updateUserOrder);
+                            _context.SaveChanges();
+                        }
+
+                        var sampleIds = _context.Orders
+                        .Where(os => os.Id == updateUserOrder.Id)
+                        .Select(os => os.SampleId)
+                        .ToList();
+
+                        var carts = _context.Carts
+                            .Where(c => c.UserId == paymentDecline.PaidBy && sampleIds.Contains(c.SampleId) && !c.Deleted)
+                            .ToList();
+
+                        foreach (var cart in carts)
+                        {
+                            cart.Active = false;
+                            cart.Deleted = true;
+                            _context.Update(cart);
+                            _context.SaveChanges();
+                        }
+                        if (!string.IsNullOrEmpty(paymentDecline.ApplicationsUser?.Email))
+                        {
+                            string toEmail = paymentDecline.ApplicationsUser.Email;
                             string subject = "Payment Declined";
-                            string message = $"Hello <b>{regDecline.ApplicationsUser.UserName},</b><br>" +
-                                             $"We regret to inform you that your payment of ₦<b>{regDecline.Orders.TotalAmount}</b> has been declined.<br>" +
+                            string message = $"Hello <b>{paymentDecline.ApplicationsUser.UserName},</b><br>" +
+                                             $"We regret to inform you that your payment of ₦<b>{paymentDecline.Orders.TotalAmount}</b> has been declined.<br>" +
                                              "Please contact our support team for more information.<br>" +
                                              "Thank you.";
 
@@ -398,6 +542,48 @@ namespace Logic.Helpers
             {
                 throw;
             }
+        }
+
+        public async Task<ApplicationUser> CreateAdminByAsync(ApplicationUserViewModel applicationUserViewModel)
+        {
+            if (applicationUserViewModel != null)
+            {
+                var admin = new ApplicationUser()
+                {
+                    FirstName = applicationUserViewModel.FirstName,
+                    LastName = applicationUserViewModel.LastName,
+                    DateCreated = DateTime.Now,
+                    PhoneNumber = applicationUserViewModel.PhoneNumber,
+                    UserName = applicationUserViewModel.Email,
+                    Email = applicationUserViewModel.Email,
+                    Gender = applicationUserViewModel.Gender,
+                    IsAdmin = true,
+                    //Role = applicationUserViewModel.Role,
+                    //Active  = applicationUserViewModel.Active,
+                    Active = true,
+                    //IsDeactivated = applicationUserViewModel.IsDeactivated,
+                    IsDeactivated = false,
+                };
+                var result = await _userManager.CreateAsync(admin, applicationUserViewModel.Password);
+                if (result.Succeeded)
+                {
+                    var userRoles = await _userManager.GetRolesAsync(admin);
+                    if (!userRoles.Contains("Admin"))
+                    {
+                        var roleResult = await _userManager.AddToRoleAsync(admin, "Admin");
+                        if (!roleResult.Succeeded)
+                        {
+                            var roleErrors = string.Join(", ", roleResult.Errors.Select(e => e.Description));
+                            throw new Exception($"Role assignment failed: {roleErrors}");
+                        }
+                    }
+                    //await _userManager.AddToRoleAsync(user, applicationUserViewModel.Role);
+                    //return user;
+                }
+                return admin;
+
+            }
+            return null;
         }
     }
 

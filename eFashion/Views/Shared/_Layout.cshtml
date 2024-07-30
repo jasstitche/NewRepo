@@ -29,10 +29,13 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/eFashion.styles.css" asp-append-version="true" />
     <link href="~/css/sweetalert2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="~/css/efashion.css" rel="stylesheet" />
     <link href="~/css/efashion.css" rel="stylesheet" />
     <!-- Favicon -->
     <link rel="shortcut icon" href="belle-template/assets/images/favicon.png" />
     <!-- Plugins CSS -->
+    
     <link rel="stylesheet" href="~/belle-template/assets/css/plugins.css">
     <!-- Bootstap CSS -->
     <link rel="stylesheet" href="~/belle-template/assets/css/bootstrap.min.css">
@@ -401,16 +404,26 @@
                 </div>
             </div>
         </div>
-        <!--End Header-->
+
+       
+   
         <div class="sidebar" id="sidebar">
             <ul>
-                <li><a asp-action="UserIndex" asp-controller="User">dasssy</a></li>
-                <li><a asp-action="Index" asp-controller="Orders">Order History</a></li>
-                <li><a href="#">Profile Settings</a></li>
-                <li><a href="#">Address Book.</a></li>
+                <li><a href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a asp-area="" asp-controller="SamplePage" asp-action="CreateSample"><i class="fas fa-box"></i> Product Management</a></li>
+                <li><a href="#"><i class="fas fa-concierge-bell"></i> Service Management</a></li>
+                <li><a href="#"><i class="fas fa-shopping-cart"></i> Order Management</a></li>
+                <li><a href="#"><i class="fas fa-users"></i> User Management</a></li>
+                <li><a asp-action="PaymentApproval" asp-controller="Admin"><i class="fas fa-credit-card"></i> Payment Approval</a></li>
+                <li><a href="#"><i class="fas fa-chart-line"></i> Reports and Analytics</a></li>
+                <li><a asp-area="" asp-controller="Admin" asp-action="CompanySettings"><i class="fas fa-cogs"></i> Company Settings</a></li>
             </ul>
         </div>
-    <div class="jumbotron-fluid">
+   
+        
+            <!--End Header-->
+  
+    <div class="offset-1">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>

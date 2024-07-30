@@ -1,4 +1,5 @@
 ﻿using Core.Data;
+using Core.Models;
 using Core.ViewModels;
 using Logic.Helpers;
 using Logic.IHelpers;
@@ -31,10 +32,46 @@ namespace eFashion.Controllers
             return View();
         }
 
+        //[HttpGet]
+        //public async Task<IActionResult> PaymentApproval()
+        //{
+        //    var allPaymentsQuery = await _context.Payments
+        //                                         .Include(x => x.Applicationuser)
+        //                                         .Include(x => x.Orders)
+        //                                         .OrderByDescending(s => s.PaymentDate)
+        //                                         .ToListAsync();
+
+        //    var model = new List<PaymentViewModels>();
+
+        //    if (allPaymentsQuery.Any())
+        //    {
+        //        foreach (var payment in allPaymentsQuery)
+        //        {
+        //            var paymentViewModel = new PaymentViewModels()
+        //            {
+        //                Id = payment.Id,
+        //                PaidBy = payment.ApplicationsUser != null ? payment.ApplicationsUser.FirstName + " " + payment.ApplicationsUser.LastName : "Unknown",
+        //                ApprovedBy = payment.ApplicationsUser?.UserName,
+        //                PaymentType = payment.PaymentType,
+        //                PaymentDate = payment.PaymentDate,
+        //                ApprovedDate = payment.ApprovedDate,
+        //                PaymentReceipt = payment.PaymentReceipt,
+        //                OrdersId = payment.Orders != null ? payment.Orders.Id : (int?)null ,// assuming Orders.Id is an int
+        //                PaymentVerificationStatus = payment.PaymentVerificationStatus,
+        //                OrderStatus = payment.OrderStatus,
+        //            };
+        //            model.Add(paymentViewModel);
+        //        }
+        //    }
+
+        //    return View(model);
+        //}
+
         [HttpGet]
         public async Task<IActionResult> PaymentApproval()
         {
             var allPaymentsQuery = await _context.Payments
+                                                 .Include(x => x.Applicationuser)
                                                  .Include(x => x.ApplicationsUser)
                                                  .Include(x => x.Orders)
                                                  .OrderByDescending(s => s.PaymentDate)
@@ -44,19 +81,25 @@ namespace eFashion.Controllers
 
             if (allPaymentsQuery.Any())
             {
+                var allUsers = _context.Users.ToList(); // Load users into memory (or query in a more optimized way)
+
                 foreach (var payment in allPaymentsQuery)
                 {
+                    var approvedByUser = _context.Users.OfType<ApplicationUser>()
+                        .FirstOrDefault(u => u.Id == payment.ApprovedBy);
                     var paymentViewModel = new PaymentViewModels()
                     {
                         Id = payment.Id,
-                        PaidBy = payment.ApplicationsUser != null ? payment.ApplicationsUser.FirstName + " " + payment.ApplicationsUser.LastName : "Unknown",
-                        ApprovedBy = payment.ApplicationsUser?.UserName,
+                        PaidBy = payment.Applicationuser != null ? payment.Applicationuser.FirstName + " " + payment.Applicationuser.LastName : "Unknown",
+                        //ApprovedBy = payment.ApplicationsUser?.UserName,
                         PaymentType = payment.PaymentType,
                         PaymentDate = payment.PaymentDate,
                         ApprovedDate = payment.ApprovedDate,
                         PaymentReceipt = payment.PaymentReceipt,
-                        OrdersId = payment.Orders != null ? payment.Orders.Id : (int?)null ,// assuming Orders.Id is an int
+                        OrdersId = payment.Orders != null ? payment.Orders.Id : (int?)null,
                         PaymentVerificationStatus = payment.PaymentVerificationStatus,
+                        OrderStatus = payment.Orders.OrderStatus,
+                        ApprovedBy = approvedByUser != null ? approvedByUser.FirstName + " " + approvedByUser.LastName : "Unknown", // Concatenate first and last names
                     };
                     model.Add(paymentViewModel);
                 }
@@ -64,7 +107,6 @@ namespace eFashion.Controllers
 
             return View(model);
         }
-
 
         public async Task<JsonResult> ApprovePayment(int paymentId)
         {
@@ -80,11 +122,11 @@ namespace eFashion.Controllers
                     {
                         return Json(new { isError = true, msg = "This payment has  been approved before" });
                     }
-                    var checkIfUserHasPaid = _userHelper.CheckUserRegPayment(payment.ApplicationsUser.Id);
-                    if (checkIfUserHasPaid)
-                    {
-                        return Json(new { isError = true, msg = "This user has already paid" });
-                    }
+                    //var checkIfUserHasPaid = _userHelper.CheckUserRegPayment(payment.ApplicationsUser.Id);
+                    //if (checkIfUserHasPaid)
+                    //{
+                    //    return Json(new { isError = true, msg = "This user has already paid" });
+                    //}
                     var approve = _adminHelper.ApproveOrderPayment(paymentId, user);
                     if (approve)
                     {
@@ -170,7 +212,31 @@ namespace eFashion.Controllers
 
 
         }
-       
+
+        public async Task<JsonResult> Received(int paymentId)
+        {
+            var responseMsg = string.Empty;
+            try
+            {
+                if (paymentId != 0)
+                {
+                    var user = _adminHelper.GetCurrentUserId(User.Identity.Name);
+                    var checkIfReceivedOrder = _userHelper.CheckIfReceived(paymentId, user);
+                    if (checkIfReceivedOrder)
+                    {
+                        return Json(new { isError = true, msg = "This user has received order before" });
+
+                    }
+                    var upDateOrder = _userHelper.UpdateOrderToCompleted(paymentId, user);
+                    return Json(new { isError = false, msg = "Order received!" });
+                }
+                return Json(new { isError = true, msg = "Could not find order" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { isError = true, msg = ex.Message });
+            }
+        }
 
     }
 

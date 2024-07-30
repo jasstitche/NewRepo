@@ -29,6 +29,8 @@ namespace Core.Enum
             Awaiting = 1,
             Shipped = 2,
             Completed = 3,
+            Cancelled = 4,
+            Recieved =  5,
         }
     }   
     

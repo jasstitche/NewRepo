@@ -16,5 +16,10 @@ namespace Logic.IHelpers
             string PopUsername { get; }
             string PopPassword { get; }
             bool SendEmail { get; set; }
+             string SenderName { get; set; }
+             string SenderEmail { get; set; }
+             string SiteName { get; set; }
+             bool IsGmail { get; set; }
+             string OutlookUsername { get; set; }
     }
 }

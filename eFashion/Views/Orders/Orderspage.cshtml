@@ -155,6 +155,20 @@
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-header">Order Summary</div>
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success">
+                        @TempData["SuccessMessage"]
+                    </div>
+                }
+
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-danger">
+                        @TempData["ErrorMessage"]
+                    </div>
+                }
+
                     <div class="card-body">
                     <form>
                         <div class="row">
@@ -266,16 +280,37 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div>
-                    <p> We are expecting you in our Office with your cash and pick up your material. Thanks for your patronage</p>
+                <div class="container card-body form-group">
+                    <form method="post" asp-action="ConfirmCashPayment" asp-controller="Orders" class="mb-5" enctype="multipart/form-data">
+                        <h1 style="text-align: center;"><b> CASH PAYMENT</b></h1>
+
+                        <input type="hidden" id="cashPaymentTypeId" name="PaymentTypeId" asp-for="PaymentTypeId" />
+                        <input type="hidden" id="totalAmountToPay" name="TotalAmountToPay" asp-for="TotalAmountToPay" />
+
+                        <div class="PROOFOFPAYMENT-detail">
+                            <label><b>CASH PAYMENT</b></label>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div>
+                                    <p> We are expecting you in our Office with your cash and pick up your material. Thanks for your patronage</p>
+                                </div>
+                                <br />
+                                <div>
+                                    Pickup Address: <p id="companyAddress"><b> </b></p>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary"> Submit</button>
+                            <button type="button" class="btn btn-secondary" onclick="closeModal('cashModal')">Close</button>
+                        </div>
+
+                    </form>
                 </div>
-                <br />
-                <div>
-                    Pickup Address: <p id="companyAddress"><b> </b></p>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeModal('cashModal')">Close</button>
+
             </div>
         </div>
     </div>
@@ -298,7 +333,7 @@
                     <form method="post" asp-action="ConfirmPayment" asp-controller="Orders" class="mb-5" enctype="multipart/form-data">
                         <h1 style="text-align: center;"><b>UPLOAD PROOF OF PAYMENT</b></h1>
 
-                        <input type="hidden" id="selectedPaymentType" name="SelectedPaymentType" asp-for="SelectedPaymentType" />
+                        <input type="hidden" id="transferPaymentTypeId" name="PaymentTypeId" asp-for="PaymentTypeId" />
                         <input type="hidden" id="totalAmountToPay" name="TotalAmountToPay" asp-for="TotalAmountToPay" />
 
                         <div class="PROOFOFPAYMENT-detail">

@@ -3,68 +3,116 @@
     ViewData["Title"] = "AdminRegister";
 }
 
-<div class="container">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <form method="post" asp-action="AdminRegister" asp-controller="Account" class="mb-5">
-        <div>
-            <h2 class="text-center text-secondary mb-3"><b>AdminRegister</b></h2>
-        </div>
-        <div class="container card-body form-group w-50" style="background-color: #D29737">
-            <div class="row">
-                <div class="col-6">
-                    <label><b>FirstName</b></label>
-                    <input type="text" class="form-control" asp-for="FirstName" />
-                    <span asp-validation-for="FirstName" class="text-danger"></span></span>
+
+    <style>
+        .input-group-append {
+            cursor: pointer;
+        }
+
+        .input-group-text {
+            background: none;
+            border: none;
+        }
+
+        .fa-eye, .fa-eye-slash {
+            color: #007bff;
+        }
+    </style>
+
+    <div class="container">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <form method="post" asp-action="AdminRegister" asp-controller="Account" class="mb-5">
+            <div>
+                <h2 class="text-center text-secondary mb-3"><b>AdminRegister</b></h2>
+            </div>
+            <div class="container card-body form-group w-50" style="background-color: #D29737">
+                <div class="row">
+                    <div class="col-6">
+                        <label><b>FirstName</b></label>
+                        <input type="text" class="form-control" asp-for="FirstName" />
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+                    <div class="col-6">
+                        <label><b>LastName</b></label>
+                        <input type="text" class="form-control" asp-for="LastName" />
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
                 </div>
-                <div class="col-6">
-                    <label><b>LastName</b></label>
-                    <input type="text" class="form-control" asp-for="LastName" />
-                    <span asp-validation-for="LastName" class="text-danger"></span></span>
+
+                <div class="row">
+                    <div class="col-6">
+                        <label><b>Gender</b></label>
+                        <input type="text" class="form-control" asp-for="Gender" />
+                        <span asp-validation-for="Gender" class="text-danger"></span>
+                    </div>
+                    <div class="col-6">
+                        <label><b>PhoneNumber</b></label>
+                        <input type="tel" class="form-control" asp-for="PhoneNumber" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-6">
+                        <label><b>Password</b></label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" asp-for="Password" id="Password" />
+                            <div class="input-group-append">
+                                <span class="input-group-text" onclick="togglePasswordVisibility('Password', 'togglePasswordIcon1')">
+                                    <i class="fa fa-eye" id="togglePasswordIcon1"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div class="col-6">
+                        <label><b>Confirm Password</b></label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" asp-for="ConfirmPassword" id="ConfirmPassword" />
+                            <div class="input-group-append">
+                                <span class="input-group-text" onclick="togglePasswordVisibility('ConfirmPassword', 'togglePasswordIcon2')">
+                                    <i class="fa fa-eye" id="togglePasswordIcon2"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-6">
+                        <label><b>Email</b></label>
+                        <input type="email" class="form-control" asp-for="Email" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="col-6">
+                        <label><b>Address</b></label>
+                        <input type="text" class="form-control" asp-for="Address" />
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="text-center mt-3">
+                    <button type="submit" class="btn btn-secondary w-25">Register</button>
                 </div>
             </div>
+        </form>
+    </div>
 
-            <div class="row">
-                <div class="col-6">
-                    <label><b>Gender</b></label>
-                    <input type="text" class="form-control" asp-for="Gender" />
-                    <span asp-validation-for="Gender" class="text-danger"></span></span>
-                </div>
-                <div class="col-6">
-                    <label><b>PhoneNumber</b></label>
-                    <input type="tel" class="form-control" asp-for="PhoneNumber" />
-                    <span asp-validation-for="PhoneNumber" class="text-danger"></span></span>
-                </div>
-            </div>
+    <script>
+        function togglePasswordVisibility(inputId, iconId) {
+            var inputElement = document.getElementById(inputId);
+            var iconElement = document.getElementById(iconId);
 
-            <div class="row">
-                <div class="col-6">
-                    <label><b>Password</b></label>
-                    <input type="password" class="form-control" asp-for="Password" />
-                </div>
-                <div class="col-6">
-                    <label><b>ConfirmPassword</b></label>
-                    <input type="password" class="form-control" asp-for="ConfirmPassword" />
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-6">
-                    <label><b>Email</b></label>
-                    <input type="Email" class="form-control" asp-for="Email" />
-                    <span asp-validation-for="Email" class="text-danger"></span></span>
-                </div>
-                <div class="col-6">
-                    <label><b>Address</b></label>
-                    <input type="text" class="form-control" asp-for="Address" />
-                    <span asp-validation-for="Address" class="text-danger"></span></span>
-                </div>
-            </div>
-
-
-            <div class="text-center mt-3">
-                <button type="submit" class="btn btn-secondary w-25 p-">Register</button>
-            </div>
-
-        </div>
-    </form>
-</div>
+            if (inputElement.type === "password") {
+                inputElement.type = "text";
+                iconElement.classList.remove("fa-eye");
+                iconElement.classList.add("fa-eye-slash");
+            } else {
+                inputElement.type = "password";
+                iconElement.classList.remove("fa-eye-slash");
+                iconElement.classList.add("fa-eye");
+            }
+        }
+    </script>
+   

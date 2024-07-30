@@ -24,5 +24,6 @@ namespace Logic.IHelpers
         CompanySettingViewModel UpdateCompanySettings(CompanySettingViewModel companySettingViewModel);
         bool DeclineOrderPayment(int paymentId, string loggedInUser);
         bool CheckIfDeclined(int paymentId);
+        Task<ApplicationUser> CreateAdminByAsync(ApplicationUserViewModel applicationUserViewModel);
     }
 }

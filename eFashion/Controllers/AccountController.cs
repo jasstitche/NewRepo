@@ -4,7 +4,8 @@ using Core.Models;
 using Core.ViewModels;
 using Logic.IHelpers;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc; 
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 
 namespace eFashion.Controllers
@@ -16,12 +17,14 @@ namespace eFashion.Controllers
         private readonly ApplicationDbContext _context;
 
         private readonly IUserHelper _userHelper;
-        public AccountController(UserManager<ApplicationUser> userManager,SignInManager<ApplicationUser> signInManager,ApplicationDbContext context,IUserHelper userHelper)
+        private readonly IAdminHelper _adminHelper;
+        public AccountController(UserManager<ApplicationUser> userManager,SignInManager<ApplicationUser> signInManager,ApplicationDbContext context,IUserHelper userHelper, IAdminHelper adminHelper)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _userHelper = userHelper;
             _context = context;
+            _adminHelper = adminHelper;
         }
 
         public IActionResult Index()
@@ -51,6 +54,8 @@ namespace eFashion.Controllers
                 if (applicationUserViewModel.Password != applicationUserViewModel.ConfirmPassword)
                 {
                     ModelState.AddModelError("ConfirmPassword", "The password and confirm password do not match.");
+                    //return Json(new { isError = false, msg = "The password and confirm password do not match." });
+
                     return View(applicationUserViewModel);
                 }
 
@@ -58,13 +63,15 @@ namespace eFashion.Controllers
             var checkForEmail = _context.ApplicationUsers.Where(x => x.Email == applicationUserViewModel.Email).FirstOrDefault();
             if (checkForEmail != null)
             {
+                //return Json(new { isError = false, msg = "Email already Exist" });
+
                 return StatusCode(500, "Email already Exist");
             }
             if (applicationUserViewModel != null)
             {
                 var userEmail = await _userManager.FindByEmailAsync(applicationUserViewModel.Email);
                 applicationUserViewModel.Role = "Admin";
-                var addUser = await _userHelper.CreateUserByAsync(applicationUserViewModel);
+                var addUser = await _adminHelper.CreateAdminByAsync(applicationUserViewModel);
                 if (addUser != null)
                 {
                     await _signInManager.PasswordSignInAsync(addUser, addUser.PasswordHash, true, true);
@@ -74,37 +81,77 @@ namespace eFashion.Controllers
             }
             return View(applicationUserViewModel);
         }
-        [HttpPost]
-        public async Task<IActionResult> Register(ApplicationUserViewModel applicationUserViewModel)
-        {
-            if (ModelState.IsValid)
-            {
-                if (applicationUserViewModel.Password != applicationUserViewModel.ConfirmPassword)
-                {
-                    ModelState.AddModelError("ConfirmPassword", "The password and confirm password do not match.");
-                    return View(applicationUserViewModel);
-                }
+        //[HttpPost]
+        //public async Task<JsonResult> Register(string data)
+        //{
+        //    //if (ModelState.IsValid)
+        //    //{
+        //    var userData = Converter.J
+        //        if (applicationUserViewModel.Password != applicationUserViewModel.ConfirmPassword)
+        //    {
+        //        //ModelState.AddModelError("ConfirmPassword", "The password and confirm password do not match.");
+        //        //return View(applicationUserViewModel);
+        //        return Json(new { isError = false, msg = "The password and confirm password do not match." });
 
+        //    }
+
+        //    //}
+        //    var checkForEmail = _context.ApplicationUsers.Where(x => x.Email == applicationUserViewModel.Email).FirstOrDefault();
+        //    if (checkForEmail != null)
+        //    {
+        //        return Json(new { isError = false, msg = "Email already Exist" });
+
+        //        //return StatusCode(500, "Email already Exist");
+        //    }
+        //    if (applicationUserViewModel != null)
+        //    {
+        //        var userEmail = await _userManager.FindByEmailAsync(applicationUserViewModel.Email);
+        //        applicationUserViewModel.Role = "User";
+        //        var addUser = await _userHelper.CreateUserByAsync(applicationUserViewModel);
+        //        if (addUser != null)
+        //        {
+        //            await _signInManager.PasswordSignInAsync(addUser, addUser.PasswordHash, true, true);
+
+        //            return RedirectToAction("Login", "Account");
+        //        }
+        //    }
+        //    return View(applicationUserViewModel);
+        //}
+
+
+        [HttpPost]
+        public async Task<JsonResult> Register([FromBody] ApplicationUserViewModel applicationUserViewModel)
+        {
+            if (applicationUserViewModel == null)
+            {
+                return Json(new { isError = true, msg = "Invalid data." });
             }
-            var checkForEmail = _context.ApplicationUsers.Where(x => x.Email == applicationUserViewModel.Email).FirstOrDefault();
+
+
+            if (applicationUserViewModel.Password != applicationUserViewModel.ConfirmPassword)
+            {
+                return Json(new { isError = true, msg = "The password and confirm password do not match." });
+            }
+
+            var checkForEmail = _context.ApplicationUsers.FirstOrDefault(x => x.Email == applicationUserViewModel.Email);
             if (checkForEmail != null)
             {
-                return StatusCode(500, "Email already Exist");
+                return Json(new { isError = true, msg = "Email already exists." });
             }
+
             if (applicationUserViewModel != null)
             {
-                var userEmail = await _userManager.FindByEmailAsync(applicationUserViewModel.Email);
-                applicationUserViewModel.Role = "User";
                 var addUser = await _userHelper.CreateUserByAsync(applicationUserViewModel);
                 if (addUser != null)
                 {
-                    await _signInManager.PasswordSignInAsync(addUser, addUser.PasswordHash, true, true);
-
-                    return RedirectToAction("Login", "Account");
+                    return Json(new { isError = false, msg = "Registration successful!" });
+                    //await _signInManager.PasswordSignInAsync(addUser, addUser.PasswordHash, true, true);
                 }
             }
-            return View(applicationUserViewModel);
+
+            return Json(new { isError = true, msg = "An error occurred during registration." });
         }
+
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {

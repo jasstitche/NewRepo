@@ -50,7 +50,7 @@ namespace eFashion.Controllers
                 var queryCartTable = _context.Carts.Where(x => x.SampleId == sampleId && x.UserId == userId && x.Deleted == false && x.Active == true).FirstOrDefault();
                 if (queryCartTable != null)
                 {
-                    return Json(new { isError = true, msg = "Cart already exist" });
+                    return Json(new { isError = true, msg = "Cart already exist, please place your order." });
                 }
 
                 var CreatedCartSample = _adminHelper.CreateCart(sampleId, userId);
@@ -156,6 +156,12 @@ namespace eFashion.Controllers
         public async Task<JsonResult> UpdateQuantity(int id, int change)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var queryCartTable = _context.Carts.Where(x => x.SampleId == id && x.UserId == userId && x.Deleted == false && x.Active == true).FirstOrDefault();
+            if (queryCartTable != null)
+            {
+                return Json(new { isError = true, msg = "Cart already exist, please place your order." });
+            }
             if (id != 0)
             {
                 var cart = await _adminHelper.UpdateQuantityProcess(id, change, userId);
@@ -179,6 +185,7 @@ namespace eFashion.Controllers
             {
                 return Json(new { isError = true, message = "Cart is empty" });
             }
+
             var getCompanySettings = _adminHelper.GetCompanySetting().Result;
             var deliveryFee = getCompanySettings?.DeliveryFee != null ? Convert.ToDecimal(getCompanySettings.DeliveryFee) : 0;
             var totalAmount = cartItems.Sum(c => c.SubTotal);
