@@ -13,16 +13,6 @@ namespace Core.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DeleteData(
-                table: "AspNetRoles",
-                keyColumn: "Id",
-                keyValue: "5009c2d8-9ba5-4e29-bb27-68d743259fde");
-
-            migrationBuilder.DeleteData(
-                table: "AspNetRoles",
-                keyColumn: "Id",
-                keyValue: "94d38b02-92ce-49cb-b272-b6f0aa07cb38");
-
             migrationBuilder.CreateTable(
                 name: "CompanySetting",
                 columns: table => new
@@ -125,15 +115,6 @@ namespace Core.Migrations
                         principalColumn: "Id");
                 });
 
-            //migrationBuilder.InsertData(
-            //    table: "AspNetRoles",
-            //    columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-            //    values: new object[,]
-            //    {
-            //        { "50b25958-a60f-42c6-b035-ef5de34451e4", null, "User", "USER" },
-            //        { "a8d4fb2c-946a-41b7-9a4d-e64d7085e39d", null, "Admin", "ADMIN" }
-            //    });
-
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_PaymentId",
                 table: "Orders",
@@ -188,24 +169,6 @@ namespace Core.Migrations
             migrationBuilder.DropTable(
                 name: "Orders");
 
-            //migrationBuilder.DeleteData(
-            //    table: "AspNetRoles",
-            //    keyColumn: "Id",
-            //    keyValue: "50b25958-a60f-42c6-b035-ef5de34451e4");
-
-            //migrationBuilder.DeleteData(
-            //    table: "AspNetRoles",
-            //    keyColumn: "Id",
-            //    keyValue: "a8d4fb2c-946a-41b7-9a4d-e64d7085e39d");
-
-            //migrationBuilder.InsertData(
-            //    table: "AspNetRoles",
-            //    columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-            //    values: new object[,]
-            //    {
-            //        { "5009c2d8-9ba5-4e29-bb27-68d743259fde", null, "User", "USER" },
-            //        { "94d38b02-92ce-49cb-b272-b6f0aa07cb38", null, "Admin", "ADMIN" }
-            //    });
         }
     }
 }
