@@ -1,4 +1,6 @@
-﻿
+﻿@using System.Security.Claims
+@model Core.Models.ApplicationUser
+
 @{
     ViewData["Title"] = "AdminDashboard";
 }
@@ -88,10 +90,21 @@
     }
 
 </style>
-
-
-    <body>
-   
+<body>
+    <div class="container">
+        <div class="sidebar" id="sidebar">
+            <h2>User Index</h2>
+            <ul>
+               @*  <li><a href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li> *@
+                <li><a asp-area="" asp-controller="SamplePage" asp-action="CreateSample"><i class="fas fa-box"></i> Product Management</a></li>
+                @* <li><a href="#"><i class="fas fa-concierge-bell"></i> Service Management</a></li>
+                <li><a href="#"><i class="fas fa-shopping-cart"></i> Order Management</a></li> *@
+               @*  <li><a href="#"><i class="fas fa-users"></i> User Management</a></li> *@
+                <li><a asp-action="PaymentApproval" asp-controller="Admin"><i class="fas fa-credit-card"></i> Payment </a></li>
+              @*   <li><a href="#"><i class="fas fa-chart-line"></i> Reports and Analytics</a></li> *@
+                <li><a asp-area="" asp-controller="Admin" asp-action="CompanySettings"><i class="fas fa-cogs"></i> Company Settings</a></li>
+            </ul>
+        </div>
         <div class="main-content">
             <div class="header">
                 <h1>Welcome, Admin</h1>
@@ -99,7 +112,8 @@
             <div class="content">
                 <h2>Dashboard Content</h2>
                 <p>This is where the main content of the dashboard will be displayed.</p>
+                
             </div>
         </div>
     </div>
-    </body>
+</body>

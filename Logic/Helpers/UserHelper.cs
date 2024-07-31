@@ -31,6 +31,7 @@ namespace Logic.Helpers
             _userManager = userManager;
             _context = context; 
             _roleManager = roleManager;
+            _adminHelper = adminHelper;
         }
 
         public async Task<ApplicationUser> CreateUserByAsync(ApplicationUserViewModel applicationUserViewModel)

@@ -204,7 +204,7 @@ namespace eFashion.Controllers
                     var saveCompanySettings = _adminHelper.UpdateCompanySettings(companySettingViewModel);
                     if (saveCompanySettings != null)
                     {
-                        return View(saveCompanySettings);
+                        return RedirectToAction("AdminDashBoard", "Admin");
                     }
                 
             }
