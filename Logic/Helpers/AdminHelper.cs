@@ -557,7 +557,6 @@ namespace Logic.Helpers
                     UserName = applicationUserViewModel.Email,
                     Email = applicationUserViewModel.Email,
                     Gender = applicationUserViewModel.Gender,
-                    IsAdmin = true,
                     //Role = applicationUserViewModel.Role,
                     //Active  = applicationUserViewModel.Active,
                     Active = true,

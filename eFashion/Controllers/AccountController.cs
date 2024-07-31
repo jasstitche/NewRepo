@@ -132,12 +132,20 @@ namespace eFashion.Controllers
             {
                 return Json(new { isError = true, msg = "The password and confirm password do not match." });
             }
-
-            var checkForEmail = _context.ApplicationUsers.FirstOrDefault(x => x.Email == applicationUserViewModel.Email);
-            if (checkForEmail != null)
+            try
             {
-                return Json(new { isError = true, msg = "Email already exists." });
+                var checkForEmail = _context.ApplicationUsers.FirstOrDefault(x => x.Email == applicationUserViewModel.Email);
+                if (checkForEmail != null)
+                {
+                    return Json(new { isError = true, msg = "Email already exists." });
+                }
             }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+            
 
             if (applicationUserViewModel != null)
             {

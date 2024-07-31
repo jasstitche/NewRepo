@@ -166,15 +166,6 @@ namespace Core.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.InsertData(
-                table: "AspNetRoles",
-                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[,]
-                {
-                    { "8d4f7126-e09a-4891-8903-b53e8baf529e", null, "Admin", "ADMIN" },
-                    { "bcc8525e-3b39-485f-8532-0bc51e3b6c88", null, "User", "USER" }
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
