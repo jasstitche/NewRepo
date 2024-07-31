@@ -1,5 +1,4 @@
 ﻿using Core.Data;
-using Core.Migrations;
 using Core.Models;
 using Logic.IHelpers;
 using Microsoft.AspNetCore.Mvc;

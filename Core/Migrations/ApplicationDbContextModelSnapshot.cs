@@ -493,9 +493,6 @@ namespace Core.Migrations
                     b.Property<string>("Gender")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsAdmin")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("IsDeactivated")
                         .HasColumnType("bit");
 

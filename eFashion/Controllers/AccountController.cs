@@ -152,7 +152,8 @@ namespace eFashion.Controllers
                 var addUser = await _userHelper.CreateUserByAsync(applicationUserViewModel);
                 if (addUser != null)
                 {
-                    return Json(new { isError = false, msg = "Registration successful!" });
+                    return Json(new { isError = false, msg = "Registration successful!"});
+                    //return Json(new { isError = false, msg = "Registration successful!" });
                     //await _signInManager.PasswordSignInAsync(addUser, addUser.PasswordHash, true, true);
                 }
             }
