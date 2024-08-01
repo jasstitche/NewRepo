@@ -147,14 +147,22 @@
             background-color: #218838;
             border-color: #1e7e34;
         }
+
+    
+    .hidden {
+        display: none;
+    }
 </style>
+
+
 
     
     <div class="container her mt-5">
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">Order Summary</div>
+                <div id="order-summary">
+                <div class="card-header">Order Summary</div>
                 @if (TempData["SuccessMessage"] != null)
                 {
                     <div class="alert alert-success">
@@ -230,6 +238,7 @@
                         </div>
                         <div class="text-center">
                             <button type="submit" onclick="checkout()" class="btn btn-secondary w-25">Order Now</button>
+                            <button type="button" id="close-button" class="btn btn-secondary w-25">CLOSE</button>
                         </div>
                     </form>
                     </div>
@@ -237,6 +246,13 @@
             </div>
         </div>
     </div>
+
+ <script>
+        document.getElementById('close-button').addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent form submission
+            document.getElementById('order-summary').classList.add('hidden');
+        });
+ </script>
 
 
 <!-- Transfer Modal -->
@@ -366,3 +382,4 @@
 </div>
 
 
+    

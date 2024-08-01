@@ -47,6 +47,7 @@ namespace eFashion.Controllers
             return View();
         }
         [HttpPost]
+        //public async Task<IActionResult> AdminRegister([FromBody] ApplicationUserViewModel applicationUserViewModel)
         public async Task<IActionResult> AdminRegister(ApplicationUserViewModel applicationUserViewModel)
         {
             if (ModelState.IsValid)
@@ -126,26 +127,18 @@ namespace eFashion.Controllers
             {
                 return Json(new { isError = true, msg = "Invalid data." });
             }
-
-
-            if (applicationUserViewModel.Password != applicationUserViewModel.ConfirmPassword)
+            var checkForEmail = _context.ApplicationUsers.FirstOrDefault(x => x.Email == applicationUserViewModel.Email);
+            if (checkForEmail != null)
             {
-                return Json(new { isError = true, msg = "The password and confirm password do not match." });
+                return Json(new { isError = true, msg = "Email already exists." });
             }
-            try
-            {
-                var checkForEmail = _context.ApplicationUsers.FirstOrDefault(x => x.Email == applicationUserViewModel.Email);
-                if (checkForEmail != null)
-                {
-                    return Json(new { isError = true, msg = "Email already exists." });
-                }
-            }
-            catch (Exception ex)
-            {
 
-                throw;
+           
+            var checkForEmails = _context.ApplicationUsers.FirstOrDefault(x => x.Email == applicationUserViewModel.Email);
+            if (checkForEmails != null)
+            {
+                return Json(new { isError = true, msg = "Email already exists." });
             }
-            
 
             if (applicationUserViewModel != null)
             {
@@ -161,7 +154,7 @@ namespace eFashion.Controllers
             return Json(new { isError = true, msg = "An error occurred during registration." });
         }
 
-        [HttpPost]
+        [HttpPost ]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             try

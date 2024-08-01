@@ -94,46 +94,44 @@ function registration() {
     };
 
     // Validate inputs before making AJAX request
-    let isValid = true;
-    $('.text-danger').text(''); // Clear previous error messages
+    //let isValid = true;
+    //$('.text-danger').text(''); // Clear previous error messages
 
-    if (!data.FirstName) {
-        $('#FirstNameError').text('First Name is required');
-        isValid = false;
-    }
-    if (!data.LastName) {
-        $('#LastNameError').text('Last Name is required');
-        isValid = false;
-    }
-    if (!data.PhoneNumber) {
-        $('#PhoneNumberError').text('Phone Number is required');
-        isValid = false;
-    }
-    if (!data.Gender) {
-        $('#GenderError').text('Gender is required');
-        isValid = false;
-    }
-    if (!data.Address) {
-        $('#AddressError').text('Address is required');
-        isValid = false;
-    }
-    if (!data.Email) {
-        $('#EmailError').text('Email is required');
-        isValid = false;
-    }
-    if (!data.Password) {
-        $('#PasswordError').text('Password is required');
-        isValid = false;
-    }
-    if (data.Password !== data.ConfirmPassword) {
-        $('#ConfirmPasswordError').text('Passwords do not match');
-        isValid = false;
-    }
-
-    if (!isValid) {
+    if (data.FirstName == "") {
+        errorAlert("Firstname is required");
         return;
     }
 
+    if (data.LastName == "") {
+        errorAlert("LastName is required");
+        return;
+    }
+    if (data.PhoneNumber == "") {
+        errorAlert("PhoneNumber is required");
+        return;
+    }
+    if (data.Gender == "") {
+        errorAlert("Gender is required");
+        return;
+    }
+    if (data.Address == "") {
+        errorAlert("Address is required");
+        return;
+    }
+    if (data.Email == "") {
+        errorAlert("Email is required");
+        return;
+    }
+    if (data.Password == "") {
+        errorAlert("Password is required");
+        return;
+    }
+    if (data.Password !== data.ConfirmPassword) {
+        errorAlert("ConfirmPassword does not match password");
+        return;
+    }
+
+   
     $.ajax({
         type: 'POST',
         url: '/Account/Register',
@@ -144,8 +142,8 @@ function registration() {
             debugger;
             
             if (result.isError) {
-                newErrorAlert(result.msg)
-                $('#validationSummary').text(result.msg);
+                errorAlert(result.msg)
+               // $('#validationSummary').text(result.msg);
             } else {
                 var url = '/Account/Login';
                 successAlertWithRedirect(result.msg, url);

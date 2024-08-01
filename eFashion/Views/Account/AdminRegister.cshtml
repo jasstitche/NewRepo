@@ -30,26 +30,22 @@
                 <div class="row">
                     <div class="col-6">
                         <label><b>FirstName</b></label>
-                        <input type="text" class="form-control" asp-for="FirstName" />
-                        <span asp-validation-for="FirstName" class="text-danger"></span>
-                    </div>
+                        <input type="text" class="form-control" asp-for="FirstName" required/>
+                       </div>
                     <div class="col-6">
                         <label><b>LastName</b></label>
-                        <input type="text" class="form-control" asp-for="LastName" />
-                        <span asp-validation-for="LastName" class="text-danger"></span>
+                        <input type="text" class="form-control" asp-for="LastName" required />
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-6">
                         <label><b>Gender</b></label>
-                        <input type="text" class="form-control" asp-for="Gender" />
-                        <span asp-validation-for="Gender" class="text-danger"></span>
+                        <input type="text" class="form-control" asp-for="Gender" required />
                     </div>
                     <div class="col-6">
                         <label><b>PhoneNumber</b></label>
-                        <input type="tel" class="form-control" asp-for="PhoneNumber" />
-                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        <input type="tel" class="form-control" asp-for="PhoneNumber" required/>
                     </div>
                 </div>
 
@@ -57,39 +53,35 @@
                     <div class="col-6">
                         <label><b>Password</b></label>
                         <div class="input-group">
-                            <input type="password" class="form-control" asp-for="Password" id="Password" />
+                            <input type="password" class="form-control" asp-for="Password" id="Password" required/>
                             <div class="input-group-append">
                                 <span class="input-group-text" onclick="togglePasswordVisibility('Password', 'togglePasswordIcon1')">
                                     <i class="fa fa-eye" id="togglePasswordIcon1"></i>
                                 </span>
                             </div>
                         </div>
-                        <span asp-validation-for="Password" class="text-danger"></span>
                     </div>
                     <div class="col-6">
                         <label><b>Confirm Password</b></label>
                         <div class="input-group">
-                            <input type="password" class="form-control" asp-for="ConfirmPassword" id="ConfirmPassword" />
+                            <input type="password" class="form-control" asp-for="ConfirmPassword" id="ConfirmPassword" required />
                             <div class="input-group-append">
                                 <span class="input-group-text" onclick="togglePasswordVisibility('ConfirmPassword', 'togglePasswordIcon2')">
                                     <i class="fa fa-eye" id="togglePasswordIcon2"></i>
                                 </span>
                             </div>
                         </div>
-                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-                    </div>
+                      </div>
                 </div>
 
                 <div class="row">
                     <div class="col-6">
                         <label><b>Email</b></label>
-                        <input type="email" class="form-control" asp-for="Email" />
-                        <span asp-validation-for="Email" class="text-danger"></span>
+                        <input type="email" class="form-control" asp-for="Email" required />
                     </div>
                     <div class="col-6">
                         <label><b>Address</b></label>
-                        <input type="text" class="form-control" asp-for="Address" />
-                        <span asp-validation-for="Address" class="text-danger"></span>
+                        <input type="text" class="form-control" asp-for="Address" required />
                     </div>
                 </div>
 
