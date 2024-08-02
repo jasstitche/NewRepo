@@ -109,7 +109,7 @@
                 <tbody>
                     @foreach (var item in Model)
                     {
-                        <tr>
+                        <tr data-item-id="@item.id">
                             <td></td>
                             <td>
                                 @if (item.SamplesPage != null && item.SamplesPage.File != null)

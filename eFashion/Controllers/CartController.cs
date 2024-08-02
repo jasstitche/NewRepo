@@ -59,7 +59,7 @@ namespace eFashion.Controllers
                     var listOfCart = _adminHelper.GetAllCart(userName).Result;
                     var cartCount = listOfCart != null ? listOfCart.Count() : 0;
 
-                    return Json(new { isError = false, msg = "Cart Created Successfully", cartCount = cartCount });
+                    return Json(new { isError = false, msg = "Item added successfully", cartCount = cartCount });
                 }
             }
             return Json(new { isError = true, msg = "Error Occurred while Creating Cart" });
@@ -139,13 +139,21 @@ namespace eFashion.Controllers
         [HttpPost]
         public async Task<JsonResult> DeleteCart(int id)
         {
+            var userName = User.Identity.Name;
             if (id != 0) 
             { 
                 var cart = await _adminHelper.DeleteCartbyId(id);
-                if (cart != null) 
+                if (cart != null)
                 {
-                    return Json(cart);
+                    var listOfCart = await _adminHelper.GetAllCart(userName);
+                    var cartCount = listOfCart != null ? listOfCart.Count() : 0;
+
+                    return Json(new { isError = false, msg = "Item removed successfully", cart, cartCount });
                 }
+                //if (cart != null) 
+                //{
+                //    return Json(cart);
+                //}
             }            
              return Json(new { isError = true, msg = "'Failed to delete cart item" });
 

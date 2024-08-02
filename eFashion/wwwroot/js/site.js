@@ -172,11 +172,11 @@ function AddCart(sampleId) {
             if (!result.isError) {
                 debugger;
                 $('#cartCountForAddedCart').text(result.cartCount);
+                successAlert(result.msg);
             }
             else {
                 var url = '/Shop/Shop';
-                newErrorAlert(result.msg, url);
-                //newErrorAlert(result.msg)
+                errorAlert(result.msg, url);
             }
         },
         error: function (ex) {
@@ -202,7 +202,7 @@ function viewCart(email) {
                 $('#cartContent').html(result);
                 $('#cartDetails').modal('show');
             } else {
-                newErrorAlert('Failed to load cart items.');
+                errorAlert('Failed to load cart items.');
             }
         },
         error: function (ex) {
@@ -224,9 +224,13 @@ function deleteCart(id) {
         success: function (result) {
             debugger;
             if (!result.isError) {
-                viewCart(result.appUser.email)
+                //viewCart(result.appUser.email);
+                $('[data-item-id="' + id + '"]').closest('tr').remove();
+
+                $('#cartCountForAddedCart').text(result.cartCount); // Update the cart count directly
+                successAlert(result.msg);
             } else {
-                newErrorAlert('Failed to delete cart items.');
+                errorAlert('Failed to delete cart items.');
             }
         },
         error: function (ex) {
@@ -265,11 +269,11 @@ function updateQuantity(id, change) {
             } else {
                 decrementspan.removeAttr('disabled');
                 var url = '/Shop/Shop';
-                newErrorAlert( result.msg, url);
+                errorAlert( result.msg, url);
             }
         },
         error: function (ex) {
-            newErrorAlert("Error occurred, try again");
+            errorAlert("Error occurred, try again");
         }
     });
 }

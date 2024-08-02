@@ -3,21 +3,42 @@
     ViewData["Title"] = "AdminRegister";
 }
 
+@{
+    if (TempData["ErrorMessage"] != null)
+    {
+        <div id="error-alert" class="alert alert-danger custom-alert">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+}
 
-    <style>
-        .input-group-append {
-            cursor: pointer;
-        }
+<style>
+    .custom-alert {
+        position: fixed;
+        right: 150px;
+        top: 40px;
+        width: 500px;
+        z-index: 1000;
+        padding: 15px;
+        border: 1px solid red;
+        border-radius: 5px;
+        background-color: #f8d7da;
+        color: #721c24;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .input-group-append {
+        cursor: pointer;
+    }
 
-        .input-group-text {
-            background: none;
-            border: none;
-        }
+    .input-group-text {
+        background: none;
+        border: none;
+    }
 
-        .fa-eye, .fa-eye-slash {
-            color: #007bff;
-        }
-    </style>
+    .fa-eye, .fa-eye-slash {
+        color: #007bff;
+    }
+</style>
 
 
     <div class="container">
@@ -92,20 +113,27 @@
         </form>
     </div>
 
-    <script>
-        function togglePasswordVisibility(inputId, iconId) {
-            var inputElement = document.getElementById(inputId);
-            var iconElement = document.getElementById(iconId);
+<script>
+    function togglePasswordVisibility(inputId, iconId) {
+        var inputElement = document.getElementById(inputId);
+        var iconElement = document.getElementById(iconId);
 
-            if (inputElement.type === "password") {
-                inputElement.type = "text";
-                iconElement.classList.remove("fa-eye");
-                iconElement.classList.add("fa-eye-slash");
-            } else {
-                inputElement.type = "password";
-                iconElement.classList.remove("fa-eye-slash");
-                iconElement.classList.add("fa-eye");
-            }
+        if (inputElement.type === "password") {
+            inputElement.type = "text";
+            iconElement.classList.remove("fa-eye");
+            iconElement.classList.add("fa-eye-slash");
+        } else {
+            inputElement.type = "password";
+            iconElement.classList.remove("fa-eye-slash");
+            iconElement.classList.add("fa-eye");
         }
-    </script>
-   
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+        var alertElement = document.getElementById('error-alert');
+        if (alertElement) {
+            setTimeout(function () {
+                alertElement.style.display = 'none';
+            }, 3000); // 5000 milliseconds = 3 seconds
+        }
+    }); 
+</script>

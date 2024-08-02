@@ -54,7 +54,8 @@ namespace eFashion.Controllers
             {
                 if (applicationUserViewModel.Password != applicationUserViewModel.ConfirmPassword)
                 {
-                    ModelState.AddModelError("ConfirmPassword", "The password and confirm password do not match.");
+                    TempData["ErrorMessage"] = "The password and confirm password do not match.";
+                    //ModelState.AddModelError("ConfirmPassword", "The password and confirm password do not match.");
                     //return Json(new { isError = false, msg = "The password and confirm password do not match." });
 
                     return View(applicationUserViewModel);
@@ -64,9 +65,8 @@ namespace eFashion.Controllers
             var checkForEmail = _context.ApplicationUsers.Where(x => x.Email == applicationUserViewModel.Email).FirstOrDefault();
             if (checkForEmail != null)
             {
-                //return Json(new { isError = false, msg = "Email already Exist" });
-
-                return StatusCode(500, "Email already Exist");
+                TempData["ErrorMessage"] = "Email already Exist.";
+                return RedirectToAction("AdminRegister");
             }
             if (applicationUserViewModel != null)
             {
