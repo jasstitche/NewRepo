@@ -16,6 +16,7 @@ using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 using static Core.Enum.eFashionEnum;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Logic.Helpers
 {
@@ -476,7 +477,7 @@ namespace Logic.Helpers
                     AccountNumber =  _generalConfiguration.AccountNumber,
                     AccountName = _generalConfiguration.AccountName ,
                     BankName = _generalConfiguration.BankName ,
-                    DeliveryAddress = _generalConfiguration.DeliveryAddress ,
+                    DeliveryAddress = _generalConfiguration.DeliveryAddress,
                     DeliveryFee = _generalConfiguration.DeliveryFee ,
                     PickUpDays = _generalConfiguration.PickUpDays,
                     

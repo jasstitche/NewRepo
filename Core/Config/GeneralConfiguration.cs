@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Core.Config
 {
-   public class GeneralConfiguration :IGeneralConfiguration
+   public class GeneralConfiguration : IGeneralConfiguration
     {
         public string CompanyAddress { get; set; }
         public string DeliveryAddress { get; set; }
