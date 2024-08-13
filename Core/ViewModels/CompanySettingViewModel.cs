@@ -1,11 +1,10 @@
-﻿using System;
+﻿using Core.Models;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Core.ViewModels
-{
+namespace Core.ViewModels;
+
     public class CompanySettingViewModel
     {
         public string? CompanyAddress { get; set; }
@@ -15,5 +14,10 @@ namespace Core.ViewModels
         public string? BankName { get; set; }
         public int? PickUpDays { get; set; }
         public string? DeliveryFee { get; set; }
+        //public int? StateId { get; set; }
+        [ForeignKey("StateId")]
+        public virtual State? States{ get; set; }
+       
+
     }
-}
+

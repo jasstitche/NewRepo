@@ -17,12 +17,15 @@ namespace eFashion.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IUserHelper _userHelper;
         private readonly IAdminHelper _adminHelper;
+        private readonly IDropdownHelper _dropdownHelper;
 
-        public AdminController(ApplicationDbContext context, IAdminHelper adminHelper, IUserHelper userHelper)
+
+        public AdminController(ApplicationDbContext context, IAdminHelper adminHelper, IUserHelper userHelper, IDropdownHelper dropdownHelper)
         {
             _context = context;
             _adminHelper = adminHelper;
             _userHelper = userHelper;
+            _dropdownHelper = dropdownHelper;
         }
 
         [HttpGet]
@@ -184,8 +187,8 @@ namespace eFashion.Controllers
         public IActionResult CompanySettings()
         {
 
- 
-                var CompanySettings = _adminHelper.GetCompanySetting().Result;
+            //ViewBag.States =  _dropdownHelper.GetState();
+            var CompanySettings = _adminHelper.GetCompanySetting().Result;
                 if (CompanySettings != null)
                 {
                     return View(CompanySettings);
@@ -195,20 +198,35 @@ namespace eFashion.Controllers
             return View();
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetCompanySettings()
+        {
+            ViewBag.States = await _dropdownHelper.GetState();
+
+            var companySettings = await _adminHelper.GetCompanySetting();
+            if (companySettings != null)
+            {
+                return Json(new { isError = false, data = companySettings });
+            }
+            return Json(new { isError = true, msg = "No data found" });
+        }
+
         [HttpPost]
         public async Task<IActionResult> CompanySettings(CompanySettingViewModel companySettingViewModel)
         {
             if (companySettingViewModel != null)
             {
-                
-                    var saveCompanySettings = _adminHelper.UpdateCompanySettings(companySettingViewModel);
+
+                var saveCompanySettings = _adminHelper.UpdateCompanySettings(companySettingViewModel);
                     if (saveCompanySettings != null)
                     {
-                        return RedirectToAction("AdminDashBoard", "Admin");
+                    return View(saveCompanySettings);
+
+                    //return RedirectToAction("AdminDashBoard", "Admin");
                     }
                 
             }
-            return View();
+            return View(companySettingViewModel);
 
 
         }
@@ -238,6 +256,33 @@ namespace eFashion.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> AllStates()
+        {
+            var states = _adminHelper.GetAllStates();
+            return View(states);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> States(StateViewModel stateViewModel)
+        {
+            if (stateViewModel != null)
+            {
+
+                var savedStates = _adminHelper.UpdateStates(stateViewModel);
+                if (savedStates != null)
+                {
+                    return RedirectToAction("AllStates", "Admin");
+
+                    //return RedirectToAction("AdminDashBoard", "Admin");
+                }
+
+            }
+            return View(stateViewModel);
+
+
+        }
     }
 
 }

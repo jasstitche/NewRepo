@@ -537,3 +537,52 @@ function deleteSample(id) {
         }
     })
 }
+
+function stateModal() {
+    // paymentTypeId = $('#PaymentTypeId').val();
+
+    debugger;
+    $.ajax({
+        type: 'GET',
+        url: '/Cart/GetTotalAmount',
+        data: {
+            paymentTypeId: paymentTypeId,
+        },
+        success: function (result) {
+            debugger
+            if (!result.isError) {
+                $('#totalAmount').text(result.totalAmount);
+                $('#totalAmountToBePay').text(result.totalAmountToPay);
+                $('#pickUpAddress').text(result.getCompanySettings.address);
+                $('#companyPhoneNumber').text(result.getCompanySettings.phoneNumber);
+                $('#companyAccountNumber').text(result.getCompanySettings.accountNumber);
+                $('#companyAccountName').text(result.getCompanySettings.accountName);
+                $('#companyBankName').text(result.getCompanySettings.bankName);
+                $('#companyAddress').text(result.getCompanySettings.companyAddress);
+                $('#deliveryAddress').text(result.getCompanySettings.deliveryAddress);
+                if (result.paymentTypeId == '1') {
+                    $('#deliveryFee').text(result.getCompanySettings.deliveryFee);
+
+                }
+                //$('#selectedPaymentType').text(result.paymentTypeId);
+                //var selectedPaymentType = $('#PaymentTypeId').val();
+                $('#transferPaymentTypeId').val(result.paymentTypeId);
+                $('#cashPaymentTypeId').val(result.paymentTypeId);
+                $('#totalAmountToPay').val(result.totalAmountToPay);
+
+
+                if (result.paymentTypeId == '1') {
+
+                    $('#transferModal').modal('show');
+                } else if (result.paymentTypeId == '2') {
+                    $('#cashModal').modal('show');
+                }
+            } else {
+                newErrorAlert("Error occurred while fetching the total amount. Please try again.");
+            }
+        },
+        error: function (ex) {
+            newErrorAlert("Error occurred. Please try again.");
+        }
+    });
+}

@@ -13,7 +13,8 @@
     <h2 class="text-center text-secondary mb-3"><b>Order Details</b></h2>    
     <div class="table-responsive">
         <table class="table table-bordered table-striped">
-            <thead class="thead-dark">
+            <thead @* class="thead-dark" *@ style="background-color: #D29737; color:white;">
+               
                 <tr>
                   
                     <th scope="col">User</th>
@@ -51,15 +52,15 @@
                         <td>
                             @if(orders.OrderStatus == OrderStatus.Shipped)
                             {
-                                <button type="submit" onclick="shipped(@orders.Payment.Id)" class="btn btn-warning"> @orders.OrderStatus</button>
+                                <button type="submit" onclick="shipped(@orders.Payment.Id)" style="background-color:coral"> @orders.OrderStatus</button>
                             }
                             else if (orders.OrderStatus == OrderStatus.Cancelled || orders.OrderStatus == OrderStatus.Completed)
                             {
-                                <button type="submit" class="btn btn-warning"> @orders.OrderStatus</button>
+                                <button type="submit" class="btn btn-danger"> @orders.OrderStatus</button>
                             }
                             else
                             {
-                                <button type="submit" class="btn btn-warning"> @orders.OrderStatus</button>
+                                <button type="submit" class="btn btn-danger"> @orders.OrderStatus</button>
                             }
 
                         </td>

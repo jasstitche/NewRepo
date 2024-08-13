@@ -107,12 +107,12 @@ namespace eFashion.Controllers
             {
                 unqueFileName = UploadedFile(viewModel.UploadPayment);
             }
-            var checkIfPaid = _userHelper.CheckIfPendingPayment(userId);
-            if (checkIfPaid)
-            {
-                TempData["ErrorMessage"] = "You already have a pending order.";
-                return RedirectToAction("Orderspage");
-            }
+            //var checkIfPaid = _userHelper.CheckIfPendingPayment(userId);
+            //if (checkIfPaid)
+            //{
+            //    TempData["ErrorMessage"] = "You already have a pending order.";
+            //    return RedirectToAction("Orderspage");
+            //}
             var savePaymentDetials = await _userHelper.SavePaymentDetails( viewModel, userId,  unqueFileName);
 
             if (savePaymentDetials)

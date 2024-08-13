@@ -1,14 +1,13 @@
 ﻿@model Core.ViewModels.CompanySettingViewModel
 @{
-    ViewData["Title"] = "CompanySettings";
-
+    ViewData["Title"] = "Company Settings";
 }
 
 <style>
     .container {
         max-width: 600px;
         margin-top: 50px;
-        background-color: #ffffff;
+        background-color: #D29737;
         padding: 30px;
         border-radius: 8px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -42,173 +41,322 @@
         }
 </style>
 
+        
 <div class="container">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <h2> CompanySettings</h2>
-    <form method="post" asp-action="CompanySettings" asp-controller="Admin">
+            <div asp-validation-Summary="ModelOnly"  class="text-danger"></div>
+    <form method="post" asp-action="CompanySettings" asp-controller="Admin" class="mb-5">
+            <h2>Company Settings</h2>
+
         <div class="form-group">
-            <label>Company Address</label>
-            <input type="text" class="form-control" placeholder="Enter Company Address" asp-for="CompanyAddress" />
+            <label for="CompanyAddress">Company Address</label>
+            <input type="text" class="form-control" asp-for="CompanyAddress" placeholder="Enter Company Address" />
+
         </div>
         <div class="form-group">
-            <label>Company Phone Number</label>
-            <input type="text" class="form-control" placeholder="Company Phone Number" asp-for="DeliveryAddress" />
+            <label for="DeliveryAddress">Delivery Address</label>
+            <input type="text" class="form-control" asp-for="DeliveryAddress" placeholder="Enter Delivery Address" />
         </div>
         <div class="form-group">
-            <label>Account Number</label>
-            <input type="text" class="form-control" placeholder="Account Number" asp-for="AccountNumber" />
+            <label for="AccountNumber">Account Number</label>
+            <input type="text" class="form-control" asp-for="AccountNumber" placeholder="Enter Account Number" />
         </div>
         <div class="form-group">
-            <label>Account Name</label>
-            <input type="text" class="form-control" placeholder="Account Name" asp-for="AccountName" />
+            <label for="AccountName">Account Name</label>
+            <input type="text" class="form-control" asp-for="AccountName" placeholder="Enter Account Name" />
         </div>
         <div class="form-group">
-            <label>Bank Name</label>
-            <input type="text" class="form-control" placeholder="Bank Name" asp-for="BankName" />
+            <label for="BankName">Bank Name</label>
+            <input type="text" class="form-control" asp-for="BankName" placeholder="Enter Bank Name" />
         </div>
         <div class="form-group">
-            <label asp-for="PickUpDays">PickUp Days</label>
+            <label for="PickUpDays">Pick Up Days</label>
             <select class="form-control" asp-for="PickUpDays">
-                <option selected disabled>Pickup Days</option>
+                <option value="" disabled selected>Select Pickup Days</option>
                 @for (int i = 1; i <= 5; i++)
                 {
                     <option value="@i">@i</option>
                 }
             </select>
         </div>
-        <div class="form-group">
-        <label>Delivery Fee</label>
-            <input type="text" class="form-control" placeholder="Delivery Fee" asp-for="DeliveryFee" />
+        <div class="row px-4 mb-2">
+            <div class="col text-start">
+                <button type="submit" class="btn btn-dark py-2 px-3" style="border-radius: 20px; width:auto;">
+                    <b>Submit</b>
+                </button>
+            </div>
         </div>
 
+       @*  <div class="row px-4 mb-2">
+            <div class="col text-start">
+                <button type="submit" class="btn btn-dark py-2 px-3" onclick="UpdatecompanySettingsObjects()" style="border-radius: 20px; width:auto;">
+                    <b>Submit</b>
+                </button>
+            </div> *@
 
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
+
+       @*  <div class="col-md-12" id="moreState">
+            <div class="col text-end">
+                <button class="btn btn-dark py-2 px-3 text-center" onclick="addNewState()" style="border-radius: 20px; width:auto;">
+                    <b><i class="fa fa-plus" style="margin-right: 3px;"></i><span>More State</span></b>
+                </button>
+            </div>
+        </div> *@
+@*             <div class="col text-end">
+                <button class="btn btn-dark py-2 px-3 text-center" onclick="addNewState()" style="border-radius: 20px; width:auto;">
+                    <b><i class="fa fa-plus" style="margin-right: 3px;"></i><span>More State</span></b>
+                </button>
+            </div> 
+        </div>
+        </div>*@
+
+ </form>
+    <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#stateModal">
+        Add New Branch
+    </button>
+
+</div>
+
+<!-- State Modal -->
+<div id="stateModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><b>ATTENTION!!!</b></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="AddCompanyBranch" asp-controller="Admin" method="post">
+
+                    <div class="form-group">
+                        <label for="deliveryFee">State</label>
+                        <select asp-for="States" class="form-control js-select2" id="states" required> </select>
+    @*                     <input type="text" class="form-control" id="state" placeholder="Enter state" />
+     *@                </div>
+                    <div class="form-group">
+                        <label for="deliveryFee">Delivery Fee</label>
+                        <select asp-for="DeliveryFee" class="form-control js-select2" id="states" required> </select>
+
+@*                         <input type="text" class="form-control" id="deliveryFee" placeholder="Enter Delivery Fee" />
+ *@                    </div>
+                </form>
+            </div>
+
+
+
+
+        </div>
+
+    </div>
+
 </div>
 
 
-@* 
-<div class="container mt-5">
-    <div class="row">
-        <!-- Billing Details -->
-        <div class="col-md-8">
-            <h3>Billing details</h3>
-            <form>
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label for="firstName">First name</label>
-                        <input type="text" class="form-control" id="firstName" placeholder="First name">
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="lastName">Last name</label>
-                        <input type="text" class="form-control" id="lastName" placeholder="Last name">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="country">Country / Region</label>
-                    <input type="text" class="form-control" id="country" value="Nigeria" disabled>
-                </div>
-                <div class="form-group">
-                    <label for="streetAddress">Street address</label>
-                    <input type="text" class="form-control" id="streetAddress" placeholder="House number and street name">
-                </div>
-                <div class="form-group">
-                    <label for="city">Town / City</label>
-                    <input type="text" class="form-control" id="city" placeholder="Town / City">
-                </div>
-                <div class="form-group">
-                    <label for="state">State</label>
-                    <select id="state" class="form-control">
-                        <option selected>Choose...</option>
-                        <option>Lagos</option>
-                        <!-- Add other states as needed -->
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="phone">Phone</label>
-                    <input type="text" class="form-control" id="phone" placeholder="Phone">
-                </div>
-                <div class="form-group">
-                    <label for="email">Email address</label>
-                    <input type="email" class="form-control" id="email" placeholder="Email address">
-                </div>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="newsletter">
-                    <label class="form-check-label" for="newsletter">Subscribe to our newsletter</label>
-                </div>
-                <div class="form-check mt-3">
-                    <input type="checkbox" class="form-check-input" id="shipDifferentAddress">
-                    <label class="form-check-label" for="shipDifferentAddress">Ship to a different address?</label>
-                </div>
-                <div id="shippingDetails" class="mt-3" style="display: none;">
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="shippingFirstName">First name</label>
-                            <input type="text" class="form-control" id="shippingFirstName" placeholder="First name">
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="shippingLastName">Last name</label>
-                            <input type="text" class="form-control" id="shippingLastName" placeholder="Last name">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="shippingCountry">Country / Region</label>
-                        <input type="text" class="form-control" id="shippingCountry" value="Nigeria" disabled>
-                    </div>
-                    <div class="form-group">
-                        <label for="shippingStreetAddress">Street address</label>
-                        <input type="text" class="form-control" id="shippingStreetAddress" placeholder="House number and street name">
-                    </div>
-                    <div class="form-group">
-                        <label for="shippingCity">Town / City</label>
-                        <input type="text" class="form-control" id="shippingCity" placeholder="Town / City">
-                    </div>
-                    <div class="form-group">
-                        <label for="shippingState">State</label>
-                        <select id="shippingState" class="form-control">
-                            <option selected>Choose...</option>
-                            <option>Lagos</option>
-                            <!-- Add other states as needed -->
-                        </select>
-                    </div>
-                </div>
-            </form>
-        </div>
 
-        <!-- Order Summary -->
-        <div class="col-md-4">
-            <h3>Your order</h3>
-            <div class="card">
-                <div class="card-body">
-                    <p><strong>Classic Mega Crush Clog - White, 37-38</strong></p>
-                    <p>Quantity: 1</p>
-                    <p>Subtotal: ₦56,500</p>
-                    <p>Shipping: ₦2,500</p>
-                    <p><strong>Total: ₦59,000</strong></p>
-                </div>
-            </div>
+@section scripts {
+<script>
 
-            <!-- Payment Options -->
-            <h3 class="mt-4">Payment</h3>
-            <form>
-                <div class="form-check">
-                    <input type="radio" class="form-check-input" id="paymentCard" name="paymentMethod" checked>
-                    <label class="form-check-label" for="paymentCard">
-                        <img src="path/to/card-icons.png" alt="Card payment icons">
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input type="radio" class="form-check-input" id="paymentCDL" name="paymentMethod">
-                    <label class="form-check-label" for="paymentCDL">
-                        <img src="path/to/cdl-icon.png" alt="CDL payment icon">
-                    </label>
-                </div>
-                <div class="form-check mt-3">
-                    <input type="checkbox" class="form-check-input" id="terms">
-                    <label class="form-check-label" for="terms">I have read and agree to the website terms and conditions</label>
-                </div>
-                <button type="submit" class="btn btn-success mt-3">Place Order</button>
-            </form>
-        </div>
-    </div>
-</div> *@
+    var companysettingsObjects = {};
+        var numberofState = 0;
+   
+
+    function loadCompanySettings() {
+
+        (async function () {
+            debugger;
+            try {
+                $.ajax({
+                    type: 'GET',
+                        url: '/Admin/GetCompanySettings', // we are calling json method
+                    data: {},
+                    dataType: 'json',
+                    success: function (data) {
+
+                        if (!data.isError) {
+                            debugger;
+                            companysettingsObjects = data.data;
+                            numberofState = companysettingsObjects.states.length;
+
+                                $("#companyAddress").val(companysettingsObjects.companyAddress);
+                                $("#deliveryAddress").val(companysettingsObjects.deliveryAddress);
+                                $("#address").val(companysettingsObjects.address);
+                                $("#accountNumber").val(companysettingsObjects.accountNumber);
+                                $("#accountName").val(companysettingsObjects.accountName);
+                                $("#bankName").val(companysettingsObjects.bankName);
+                                $("#deliveryFee").val(companysettingsObjects.deliveryFee);
+                                $("#pickUpDays").val(companysettingsObjects.pickUpDays);
+
+
+
+
+                                if (companysettingsObjects.states != "" || companysettingsObjects.states != null || companysettingsObjects.states.count() > 0) {
+                                    buildStateForm(stateObjects.states);
+                                }
+
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error(error.message);
+            }
+        })();
+    }
+
+        function buildStateForm(stateData) {
+            debugger
+            let stateForm = "";
+            if (stateData != null) {
+                for (let i = 0; i < stateData.length; i++) {
+
+                    stateForm = '<div class="col-md-12" id="cpySettingsStateBox{inputID}">' +
+                        '<div class="row d-inline-flex">' +
+                        '<div class="form-group col-md-4 col-lg-4 col-sm-12 col-12 mb-3">' +
+                        '<label for="usr">State. Name</label>' +
+                        '<input type="text" class="form-control inputFormat" id="state_Name{inputID}" placeholder="Enter Name" />' +
+                        '</div>' +
+                        '<div class="form-group col-md-3 col-lg-3 col-sm-12 col-12 mb-3">' +
+                        '<label for="usr">Delivery Fee</label>' +
+                        '<input type="text" class="form-control inputFormat" id="state_DeliveryFee{inputID}" placeholder="Enter Amount" />' +
+                        '</div>' +
+                        '<div class="col-md-1 col-lg-1 col-sm-2 col-2  mb-3">' +
+                        '<a class="btn text-white form-group" style="margin-top: 30px;background-color: #0C2B4B;">' +
+                        '<i class="fa fa-trash" onclick="RemoveStateDiv(event)" title="Delete" id="{inputID}"> Del</i>' +
+                        '</a>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>';
+                    var stateDiv = stateForm.replaceAll("{inputID}", i);
+                    $('#stateFormContainer').append(stateDiv);
+
+                    $("#state_Name" + i).val(stateData[i].name);
+                    $("#state_deliveryamount" + i).val(stateData[i].deliveryamount);
+                }
+            }
+        }
+
+    var updateCompanySettingsObjects = {};
+    var errMsg = "";
+
+    async function LoadCompanySettingsObject() {
+        debugger;
+
+            updateCompanySettingsObjects.companyAddress = $("#companyAddress").val();
+            updateCompanySettingsObjects.deliveryAddress = $("#deliveryAddress").val();
+            updateCompanySettingsObjects.accountNumber = $("#accountNumber").val();
+            updateCompanySettingsObjects.accountName = $("#accountName").val();
+            updateCompanySettingsObjects.bankName = $("#bankName").val();
+            updateCompanySettingsObjects.deliveryFee = $("#deliveryFee").val();
+            updateCompanySettingsObjects.pickUpDays = $('#pickUpDays').val();
+
+
+            updateCompanySettingsObjects.states = [];
+            if (companysettingsObjects.states != null) {
+                for (var i = 0; i < numberofState + 1; i++) {
+                    var stateInfo = { name: '', deliveryamount: '' };
+                    stateInfo.name = $("#state_Name" + i).val();
+                    stateInfo.deliveryamount = $("#state_DeliveryFee" + i).val();
+
+
+                    if (stateInfo.name != "" && stateInfo.deliveryamount != "") {
+                        if (stateInfo.name != undefined && stateInfo.deliveryamount != undefined) {
+                            updateCompanySettingsObjects.states.push(stateInfo);
+                        }
+                    }
+                }
+            }
+        //     updateCompanySettingsObjects.states = [];
+        //     if (companysettingsObjects.states != null) {
+        //     for (var i = 0; i < numberofState + 1; i++) {
+        //         var stateInfo = { name: '', deliveryamount: ''};
+        //             stateInfo.name = $("#state_Name" + i).val();
+        //             stateInfo.deliveryamount = $("#state_DeliveryFee" + i).val();
+               
+
+        //         if (stateInfo.name != "" && stateInfo.deliveryamount != "") {
+        //             if (stateInfo.name != undefined && stateInfo.deliveryamount != undefined) {
+        //                 companySettingsObjects.state.push(stateInfo);
+        //             }
+        //         }
+        //     }
+        // }
+
+            companysettingsObjects = updateCompanySettingsObjects;
+    }
+
+    async function UpdatecompanySettingsObjects() {
+        debugger;
+        var btn = $(this);
+        const check = await LoadCompanySettingsObject()
+        if (check) {
+            errorAlert("Error Occured, please try again")
+        } else {
+                let companysettingObjs = JSON.stringify(companysettingsObjects);
+            $.ajax({
+                type: 'POST',
+                dataType: 'Json',
+                url: '/Admin/CompanySettings',
+                data:
+                {
+                        companySettingViewModel: companysettingObjs,
+                   
+                        },
+                success: function (result) {
+
+                    if (!result.isError) {
+                        var url = '';
+                        successAlertWithRedirect(result.msg, url)
+
+                    }
+                    else {
+                        errorAlert(result.msg)
+                    }
+                },
+            });
+        }
+    }
+
+
+
+        $(document).ready(function () {
+            loadCompanySettings();
+        });
+
+        function addNewState() {
+            debugger;
+            numberofState++;
+            var addNewStateTemplate = '<div class="col-md-12" id="cpySettingsStateBox{inputID}">' +
+                '<div class="row d-inline-flex">' +
+                '<div class="form-group col-md-4 col-lg-4 col-sm-12 col-12 mb-3">' +
+                '<label for="usr">State. Name</label>' +
+                '<input type="text" class="form-control inputFormat" id="state_Name{inputID}" placeholder="Enter Name" />' +
+                '</div>' +
+                '<div class="form-group col-md-3 col-lg-3 col-sm-12 col-12 mb-3">' +
+                '<label for="usr">Delivery Fee</label>' +
+                '<input type="text" class="form-control inputFormat" id="state_DeliveryFee{inputID}" placeholder="Enter Amount" />' +
+                '</div>' +
+                '<div class="col-md-1 col-lg-1 col-sm-2 col-2  mb-3">' +
+                '<a class="btn text-white form-group" style="margin-top: 30px;background-color: #0C2B4B;">' +
+                '<i class="fa fa-trash" onclick="RemoveStateDiv(event)" title="Delete" id="{inputID}"> Del</i>' +
+                '</a>' +
+                '</div>' +
+                '</div>' +
+                '</div>';
+            var stateDiv = addNewStateTemplate.replaceAll("{inputID}", numberofState);
+            $('#stateFormContainer').append(stateDiv);
+        }
+
+
+
+        function RemoveStateDiv(e) {
+            var stateContainerId = e.target.id;
+            var rowId = "addStateBox" + stateContainerId;
+            document.getElementById(rowId).remove();
+        }
+
+</script>
+}
+
+
+
+  

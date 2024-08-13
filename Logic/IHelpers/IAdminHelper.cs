@@ -17,7 +17,7 @@ namespace Logic.IHelpers
         Cart CreateCart(int sampleId, string loggedInUser);
         Task<List<Cart>> GetAllCart(string email);
         Task<Cart> DeleteCartbyId(int id);
-       // Task<Cart> UpdateQuantityProcess(int id, int change);
+        // Task<Cart> UpdateQuantityProcess(int id, int change);
         Task<Cart> UpdateQuantityProcess(int id, int change, string userId);
         bool ApproveOrderPayment(int paymentId, string loggedInUser);
         Task<CompanySettingViewModel> GetCompanySetting();
@@ -25,5 +25,7 @@ namespace Logic.IHelpers
         bool DeclineOrderPayment(int paymentId, string loggedInUser);
         bool CheckIfDeclined(int paymentId);
         Task<ApplicationUser> CreateAdminByAsync(ApplicationUserViewModel applicationUserViewModel);
+        StateViewModel UpdateStates(StateViewModel stateViewMode);
+        List<StateViewModel> GetAllStates();
     }
 }

@@ -17,5 +17,9 @@ namespace Core.Data
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Orders> Orders { get; set; }
         public DbSet<CompanySetting> CompanySetting { get; set; }
+        public DbSet<State> States { get; set; }
+
+
+
     }
 }

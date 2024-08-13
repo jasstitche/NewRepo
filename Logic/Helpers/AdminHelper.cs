@@ -506,11 +506,72 @@ namespace Logic.Helpers
             return settings;
         }
 
+        //public CompanySettingViewModel UpdateCompanySettings(CompanySettingViewModel companySettingViewModel)
+        //{
+        //    try
+        //    {
+        //        var existingSettings = _context.CompanySetting
+        //                                      .Include(c => c.States)
+        //                                      .FirstOrDefault();
+
+        //        if (existingSettings != null)
+        //        {
+        //            existingSettings.CompanyAddress = companySettingViewModel.CompanyAddress;
+        //            existingSettings.AccountNumber = companySettingViewModel.AccountNumber;
+        //            existingSettings.AccountName = companySettingViewModel.AccountName;
+        //            existingSettings.BankName = companySettingViewModel.BankName;
+        //            //existingSettings.DeliveryFee = companySettingViewModel.DeliveryFee;
+        //            existingSettings.PickUpDays = companySettingViewModel.PickUpDays;
+        //            existingSettings.DeliveryAddress = companySettingViewModel.DeliveryAddress;
+
+        //            existingSettings.States.Clear();
+        //            foreach (var stateViewModel in companySettingViewModel.States)
+        //            {
+        //                existingSettings.States.Add(new State
+        //                {
+        //                    Name = stateViewModel.Name,
+        //                    DeliveryFee = stateViewModel.DeliveryFee
+        //                });
+        //            }
+
+        //            _context.CompanySetting.Update(existingSettings);
+        //            _context.SaveChanges();
+
+        //            var updatedViewModel = new CompanySettingViewModel
+        //            {
+        //                CompanyAddress = existingSettings.CompanyAddress,
+        //                AccountNumber = existingSettings.AccountNumber,
+        //                AccountName = existingSettings.AccountName,
+        //                BankName = existingSettings.BankName,
+        //                //DeliveryFee = existingSettings.DeliveryFee,
+        //                PickUpDays = existingSettings.PickUpDays,
+        //                DeliveryAddress = existingSettings.DeliveryAddress,
+        //                States = existingSettings.States.Select(s => new StateViewModel
+        //                {
+        //                    Name = s.Name,
+        //                    DeliveryFee = s.DeliveryFee
+        //                }).ToList()
+        //            };
+
+        //            return updatedViewModel;
+        //        }
+
+        //        return null;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //}
+
+
         public CompanySettingViewModel UpdateCompanySettings(CompanySettingViewModel companySettingViewModel)
         {
             try
             {
-                var existingSettings = _context.CompanySetting.FirstOrDefault();
+                var existingSettings = _context.CompanySetting
+                                              //.Include(c => c.States)
+                                              .FirstOrDefault();
 
                 if (existingSettings != null)
                 {
@@ -518,9 +579,12 @@ namespace Logic.Helpers
                     existingSettings.AccountNumber = companySettingViewModel.AccountNumber;
                     existingSettings.AccountName = companySettingViewModel.AccountName;
                     existingSettings.BankName = companySettingViewModel.BankName;
-                    existingSettings.DeliveryFee= companySettingViewModel.DeliveryFee;
+                    existingSettings.DeliveryFee = companySettingViewModel.DeliveryFee;
                     existingSettings.PickUpDays = companySettingViewModel.PickUpDays;
                     existingSettings.DeliveryAddress = companySettingViewModel.DeliveryAddress;
+
+
+
                     _context.CompanySetting.Update(existingSettings);
                     _context.SaveChanges();
 
@@ -532,7 +596,8 @@ namespace Logic.Helpers
                         BankName = existingSettings.BankName,
                         DeliveryFee = existingSettings.DeliveryFee,
                         PickUpDays = existingSettings.PickUpDays,
-                        DeliveryAddress = existingSettings.DeliveryAddress
+                        DeliveryAddress = existingSettings.DeliveryAddress,
+
                     };
 
                     return updatedViewModel;
@@ -544,6 +609,7 @@ namespace Logic.Helpers
                 throw;
             }
         }
+
 
         public async Task<ApplicationUser> CreateAdminByAsync(ApplicationUserViewModel applicationUserViewModel)
         {
@@ -585,6 +651,69 @@ namespace Logic.Helpers
             }
             return null;
         }
+
+        public StateViewModel UpdateStates(StateViewModel stateViewModel)
+        {
+            try
+            {
+                var existingState = _context.States
+                                            .FirstOrDefault(s => s.Id == stateViewModel.Id);
+
+                if (existingState != null)
+                {
+                    existingState.Name = stateViewModel.Name;
+                    existingState.DeliveryFee = stateViewModel.DeliveryFee;
+                    existingState.Active = stateViewModel.Active;
+                    existingState.Deleted = stateViewModel.Deleted;
+
+                    _context.States.Update(existingState);
+                    _context.SaveChanges();
+
+                    var updatedViewModel = new StateViewModel
+                    {
+                        Id = existingState.Id,
+                        Name = existingState.Name,
+                        DeliveryFee = existingState.DeliveryFee,
+                        Active = existingState.Active,
+                        Deleted = existingState.Deleted,
+                    };
+
+                    return updatedViewModel;
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public List<StateViewModel> GetAllStates()
+        {
+            try
+            {
+                var states = _context.States
+                                     .Where(s => !s.Deleted) 
+                                     .Select(s => new StateViewModel
+                                     {
+                                         Id = s.Id,
+                                         Name = s.Name,
+                                         DeliveryFee = s.DeliveryFee,
+                                         Active = s.Active,
+                                         Deleted = s.Deleted
+                                     })
+                                     .ToList();
+
+                return states;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+    
+
     }
 
 }

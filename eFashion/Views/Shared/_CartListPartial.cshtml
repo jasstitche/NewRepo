@@ -160,7 +160,7 @@
 
                                 <button class="decrement" onclick="updateQuantity('@item.id',-1)" style=" margin-right: 10px;" @(item.Quantity == 1  ? "disabled" : "")>
                                     -
-                                </button><span class="quantity">@item.Quantity</span><button class="increment" onclick="updateQuantity('@item.id',1)" style=" margin-left: 8px;">
+                                </button><span class="quantity" style="color:darkorange">@item.Quantity</span><button class="increment" onclick="updateQuantity('@item.id',1)" style=" margin-left: 8px;">
                                     +
                                 </button>
                             </td>
