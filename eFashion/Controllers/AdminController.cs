@@ -184,10 +184,10 @@ namespace eFashion.Controllers
 
 
         [HttpGet]
-        public IActionResult CompanySettings()
+        public async Task<IActionResult> CompanySettings()
         {
 
-            //ViewBag.States =  _dropdownHelper.GetState();
+            ViewBag.States = await _dropdownHelper.GetState();
             var CompanySettings = _adminHelper.GetCompanySetting().Result;
                 if (CompanySettings != null)
                 {
@@ -273,7 +273,7 @@ namespace eFashion.Controllers
                 var savedStates = _adminHelper.UpdateStates(stateViewModel);
                 if (savedStates != null)
                 {
-                    return RedirectToAction("AllStates", "Admin");
+                    return RedirectToAction("CompanySettings", "Admin");
 
                     //return RedirectToAction("AdminDashBoard", "Admin");
                 }
@@ -283,6 +283,33 @@ namespace eFashion.Controllers
 
 
         }
+
+        [HttpGet]
+        public JsonResult GetDeliveryFee(int stateId)
+        {
+            // Assuming you have a method in your service or repository to get the delivery fee by stateId
+            var deliveryFee = _adminHelper.GetDeliveryFeeByStateId(stateId);
+            return Json(deliveryFee);
+        }
+
+        [HttpGet]
+        public JsonResult GetStateDetails(int stateId)
+        {
+            var state = _adminHelper.GetDeliveryFeeByStateId(stateId); // Assume this method fetches the state details
+            if (state != null)
+            {
+                return Json(new
+                {
+                    id = state.Id,
+                    name = state.Name,
+                    deliveryFee = state.DeliveryFee,
+                    active = state.Active,
+                    deleted = state.Deleted
+                });
+            }
+            return Json(null);
+        }
+
     }
 
 }

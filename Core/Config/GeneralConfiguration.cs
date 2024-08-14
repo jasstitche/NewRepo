@@ -16,6 +16,7 @@ namespace Core.Config
 
         public string BankName { get; set; }
         public int PickUpDays { get; set; }
+        public int State { get; set; }
         public string DeliveryFee { get; set; }
 
        

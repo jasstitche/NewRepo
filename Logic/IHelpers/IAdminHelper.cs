@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Logic.IHelpers
 {
@@ -25,7 +26,10 @@ namespace Logic.IHelpers
         bool DeclineOrderPayment(int paymentId, string loggedInUser);
         bool CheckIfDeclined(int paymentId);
         Task<ApplicationUser> CreateAdminByAsync(ApplicationUserViewModel applicationUserViewModel);
-        StateViewModel UpdateStates(StateViewModel stateViewMode);
+        //StateViewModel UpdateStates(StateViewModel stateViewMode);
+        Task<State> UpdateStates(StateViewModel viewModel);
         List<StateViewModel> GetAllStates();
+        State GetDeliveryFeeByStateId(int stateId);
+        //bool SaveState(StateViewModel model);
     }
 }

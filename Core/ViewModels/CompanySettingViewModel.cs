@@ -14,10 +14,10 @@ namespace Core.ViewModels;
         public string? BankName { get; set; }
         public int? PickUpDays { get; set; }
         public string? DeliveryFee { get; set; }
-        //public int? StateId { get; set; }
-        [ForeignKey("StateId")]
-        public virtual State? States{ get; set; }
-       
+        public int? StateId { get; set; }
+    public bool Deleted { get; set; }
+    public bool Active { get; set; }
 
-    }
+
+}
 

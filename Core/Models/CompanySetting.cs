@@ -17,10 +17,10 @@ namespace Core.Models
         public string? BankName { get; set; }
         public int? PickUpDays { get; set; }
         public string? DeliveryFee { get; set; }
-        //public int? StateId { get; set; }
-        //[ForeignKey("StateId")]
+        public int? StateId { get; set; }
+        [ForeignKey("StateId")]
 
-        //public virtual State? State { get; set; }
+        public virtual State? State { get; set; }
 
     }
 

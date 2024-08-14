@@ -111,7 +111,7 @@
 
  </form>
     <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#stateModal">
-        Add New Branch
+        Add State
     </button>
 
 </div>
@@ -127,232 +127,186 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form asp-action="AddCompanyBranch" asp-controller="Admin" method="post">
+                <form asp-action="States" asp-controller="Admin" method="post">
+
+
 
                     <div class="form-group">
-                        <label for="deliveryFee">State</label>
-                        <select asp-for="States" class="form-control js-select2" id="states" required> </select>
-    @*                     <input type="text" class="form-control" id="state" placeholder="Enter state" />
-     *@                </div>
+                        <label for="state">State</label>
+                        <select asp-for="StateId" class="form-control js-select2" id="states" required>
+                            @foreach (var state in ViewBag.States as List<Core.Models.State>)
+                            {
+                                <option value="@state.Id">@state.Name</option>
+                            }
+                        </select>
+                    </div>
+
+
                     <div class="form-group">
                         <label for="deliveryFee">Delivery Fee</label>
-                        <select asp-for="DeliveryFee" class="form-control js-select2" id="states" required> </select>
+                        <input type="text" asp-for="DeliveryFee" class="form-control" id="deliveryFee" placeholder="Enter Delivery Fee" />
+                    </div>
 
-@*                         <input type="text" class="form-control" id="deliveryFee" placeholder="Enter Delivery Fee" />
- *@                    </div>
+
+                    <div class="form-group">
+                        <label for="active">Active</label>
+                        <input type="checkbox" asp-for="Active" id="active" />
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="deleted">Deleted</label>
+                        <input type="checkbox" asp-for="Deleted" id="deleted" />
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('cashModal')">Close</button>
+                    </div>
                 </form>
             </div>
-
-
-
-
         </div>
-
     </div>
-
 </div>
+
+
+
+
+
+
+
+@* <div id="stateModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><b>ATTENTION!!!</b></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="States" asp-controller="Admin" method="post">
+
+                   
+
+                    <div class="form-group">
+                        <label for="state">State</label>
+                        <select asp-for="StateId" class="form-control js-select2" id="states" required>
+                            @foreach (var state in ViewBag.States as List<Core.Models.State>)
+                            {
+                                <option value="@state.Id">@state.Name</option>
+                            }
+                        </select>
+                    </div>
+
+                    
+                    <div class="form-group">
+                        <label for="deliveryFee">Delivery Fee</label>
+                        <input type="text" asp-for="DeliveryFee" class="form-control" id="deliveryFee" placeholder="Enter Delivery Fee" />
+                    </div>
+
+                   
+                    <div class="form-group">
+                        <label for="active">Active</label>
+                        <input type="checkbox" asp-for="Active" id="active" />
+                    </div>
+
+                   
+                    <div class="form-group">
+                        <label for="deleted">Deleted</label>
+                        <input type="checkbox" asp-for="Deleted" id="deleted" />
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('cashModal')">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+ *@
 
 
 
 @section scripts {
 <script>
 
-    var companysettingsObjects = {};
-        var numberofState = 0;
-   
-
-    function loadCompanySettings() {
-
-        (async function () {
-            debugger;
-            try {
-                $.ajax({
-                    type: 'GET',
-                        url: '/Admin/GetCompanySettings', // we are calling json method
-                    data: {},
-                    dataType: 'json',
-                    success: function (data) {
-
-                        if (!data.isError) {
-                            debugger;
-                            companysettingsObjects = data.data;
-                            numberofState = companysettingsObjects.states.length;
-
-                                $("#companyAddress").val(companysettingsObjects.companyAddress);
-                                $("#deliveryAddress").val(companysettingsObjects.deliveryAddress);
-                                $("#address").val(companysettingsObjects.address);
-                                $("#accountNumber").val(companysettingsObjects.accountNumber);
-                                $("#accountName").val(companysettingsObjects.accountName);
-                                $("#bankName").val(companysettingsObjects.bankName);
-                                $("#deliveryFee").val(companysettingsObjects.deliveryFee);
-                                $("#pickUpDays").val(companysettingsObjects.pickUpDays);
-
-
-
-
-                                if (companysettingsObjects.states != "" || companysettingsObjects.states != null || companysettingsObjects.states.count() > 0) {
-                                    buildStateForm(stateObjects.states);
-                                }
-
-                        }
-                    }
-                });
-            } catch (error) {
-                console.error(error.message);
-            }
-        })();
-    }
-
-        function buildStateForm(stateData) {
-            debugger
-            let stateForm = "";
-            if (stateData != null) {
-                for (let i = 0; i < stateData.length; i++) {
-
-                    stateForm = '<div class="col-md-12" id="cpySettingsStateBox{inputID}">' +
-                        '<div class="row d-inline-flex">' +
-                        '<div class="form-group col-md-4 col-lg-4 col-sm-12 col-12 mb-3">' +
-                        '<label for="usr">State. Name</label>' +
-                        '<input type="text" class="form-control inputFormat" id="state_Name{inputID}" placeholder="Enter Name" />' +
-                        '</div>' +
-                        '<div class="form-group col-md-3 col-lg-3 col-sm-12 col-12 mb-3">' +
-                        '<label for="usr">Delivery Fee</label>' +
-                        '<input type="text" class="form-control inputFormat" id="state_DeliveryFee{inputID}" placeholder="Enter Amount" />' +
-                        '</div>' +
-                        '<div class="col-md-1 col-lg-1 col-sm-2 col-2  mb-3">' +
-                        '<a class="btn text-white form-group" style="margin-top: 30px;background-color: #0C2B4B;">' +
-                        '<i class="fa fa-trash" onclick="RemoveStateDiv(event)" title="Delete" id="{inputID}"> Del</i>' +
-                        '</a>' +
-                        '</div>' +
-                        '</div>' +
-                        '</div>';
-                    var stateDiv = stateForm.replaceAll("{inputID}", i);
-                    $('#stateFormContainer').append(stateDiv);
-
-                    $("#state_Name" + i).val(stateData[i].name);
-                    $("#state_deliveryamount" + i).val(stateData[i].deliveryamount);
-                }
-            }
-        }
-
-    var updateCompanySettingsObjects = {};
-    var errMsg = "";
-
-    async function LoadCompanySettingsObject() {
-        debugger;
-
-            updateCompanySettingsObjects.companyAddress = $("#companyAddress").val();
-            updateCompanySettingsObjects.deliveryAddress = $("#deliveryAddress").val();
-            updateCompanySettingsObjects.accountNumber = $("#accountNumber").val();
-            updateCompanySettingsObjects.accountName = $("#accountName").val();
-            updateCompanySettingsObjects.bankName = $("#bankName").val();
-            updateCompanySettingsObjects.deliveryFee = $("#deliveryFee").val();
-            updateCompanySettingsObjects.pickUpDays = $('#pickUpDays').val();
-
-
-            updateCompanySettingsObjects.states = [];
-            if (companysettingsObjects.states != null) {
-                for (var i = 0; i < numberofState + 1; i++) {
-                    var stateInfo = { name: '', deliveryamount: '' };
-                    stateInfo.name = $("#state_Name" + i).val();
-                    stateInfo.deliveryamount = $("#state_DeliveryFee" + i).val();
-
-
-                    if (stateInfo.name != "" && stateInfo.deliveryamount != "") {
-                        if (stateInfo.name != undefined && stateInfo.deliveryamount != undefined) {
-                            updateCompanySettingsObjects.states.push(stateInfo);
-                        }
-                    }
-                }
-            }
-        //     updateCompanySettingsObjects.states = [];
-        //     if (companysettingsObjects.states != null) {
-        //     for (var i = 0; i < numberofState + 1; i++) {
-        //         var stateInfo = { name: '', deliveryamount: ''};
-        //             stateInfo.name = $("#state_Name" + i).val();
-        //             stateInfo.deliveryamount = $("#state_DeliveryFee" + i).val();
-               
-
-        //         if (stateInfo.name != "" && stateInfo.deliveryamount != "") {
-        //             if (stateInfo.name != undefined && stateInfo.deliveryamount != undefined) {
-        //                 companySettingsObjects.state.push(stateInfo);
-        //             }
-        //         }
-        //     }
-        // }
-
-            companysettingsObjects = updateCompanySettingsObjects;
-    }
-
-    async function UpdatecompanySettingsObjects() {
-        debugger;
-        var btn = $(this);
-        const check = await LoadCompanySettingsObject()
-        if (check) {
-            errorAlert("Error Occured, please try again")
-        } else {
-                let companysettingObjs = JSON.stringify(companysettingsObjects);
-            $.ajax({
-                type: 'POST',
-                dataType: 'Json',
-                url: '/Admin/CompanySettings',
-                data:
-                {
-                        companySettingViewModel: companysettingObjs,
-                   
-                        },
-                success: function (result) {
-
-                    if (!result.isError) {
-                        var url = '';
-                        successAlertWithRedirect(result.msg, url)
-
-                    }
-                    else {
-                        errorAlert(result.msg)
-                    }
-                },
-            });
-        }
-    }
-
-
 
         $(document).ready(function () {
-            loadCompanySettings();
+            $('#states').change(function () {
+                debugger;
+                var stateId = $(this).val();
+                if (stateId) {
+                    $.ajax({
+                        url: '@Url.Action("GetStateDetails", "Admin")', // Update URL to match your action
+                        type: 'GET',
+                        data: { stateId: stateId },
+                        success: function (response) {
+                            if (response) {
+                                debugger;
+                                // Populate the form fields with the response data
+
+                                $('#deliveryFee').val(response.deliveryFee);
+                                $('#active').prop('checked', response.active);
+                                $('#deleted').prop('checked', response.deleted);
+                            } else {
+                                // Clear the form fields if no data is returned
+                                $('#deliveryFee').val('');
+                                $('#active').prop('checked', false);
+                                $('#deleted').prop('checked', false);
+                            }
+                        },
+                        error: function () {
+                            alert('Error retrieving state details.');
+                        }
+                    });
+                } else {
+                    // Clear the form fields if no state is selected
+                    $('#deliveryFee').val('');
+                    $('#active').prop('checked', false);
+                    $('#deleted').prop('checked', false);
+                }
+            });
         });
 
-        function addNewState() {
-            debugger;
-            numberofState++;
-            var addNewStateTemplate = '<div class="col-md-12" id="cpySettingsStateBox{inputID}">' +
-                '<div class="row d-inline-flex">' +
-                '<div class="form-group col-md-4 col-lg-4 col-sm-12 col-12 mb-3">' +
-                '<label for="usr">State. Name</label>' +
-                '<input type="text" class="form-control inputFormat" id="state_Name{inputID}" placeholder="Enter Name" />' +
-                '</div>' +
-                '<div class="form-group col-md-3 col-lg-3 col-sm-12 col-12 mb-3">' +
-                '<label for="usr">Delivery Fee</label>' +
-                '<input type="text" class="form-control inputFormat" id="state_DeliveryFee{inputID}" placeholder="Enter Amount" />' +
-                '</div>' +
-                '<div class="col-md-1 col-lg-1 col-sm-2 col-2  mb-3">' +
-                '<a class="btn text-white form-group" style="margin-top: 30px;background-color: #0C2B4B;">' +
-                '<i class="fa fa-trash" onclick="RemoveStateDiv(event)" title="Delete" id="{inputID}"> Del</i>' +
-                '</a>' +
-                '</div>' +
-                '</div>' +
-                '</div>';
-            var stateDiv = addNewStateTemplate.replaceAll("{inputID}", numberofState);
-            $('#stateFormContainer').append(stateDiv);
-        }
+        // $(document).ready(function () {
+        //     $('#stateModal form').submit(function (event) {
+        //         event.preventDefault(); // Prevent default form submission
+
+        //         var form = $(this);
+        //         var formData = form.serialize(); // Serialize form data
+
+        //         $.ajax({
+        //             url: form.attr('action'),
+        //             type: 'POST',
+        //             data: formData,
+        //             success: function (response) {
+        //                 if (response.success) {
+        //                     alert(response.message);
+        //                     $('#stateModal').modal('hide');
+        //                     // Optionally, update the state list or perform other actions
+        //                 } else {
+        //                     alert('Error: ' + response.message);
+        //                     // Handle validation errors if necessary
+        //                     if (response.errors) {
+        //                         response.errors.forEach(function (error) {
+        //                             alert(error);
+        //                         });
+        //                     }
+        //                 }
+        //             },
+        //             error: function () {
+        //                 alert('Error submitting the form.');
+        //             }
+        //         });
+        //     });
+        // });
 
 
 
-        function RemoveStateDiv(e) {
-            var stateContainerId = e.target.id;
-            var rowId = "addStateBox" + stateContainerId;
-            document.getElementById(rowId).remove();
-        }
+  
 
 </script>
 }

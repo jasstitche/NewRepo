@@ -480,6 +480,7 @@ namespace Logic.Helpers
                     DeliveryAddress = _generalConfiguration.DeliveryAddress,
                     DeliveryFee = _generalConfiguration.DeliveryFee ,
                     PickUpDays = _generalConfiguration.PickUpDays,
+                    //StateId = _generalConfiguration.State,
                     
                 };
 
@@ -582,6 +583,7 @@ namespace Logic.Helpers
                     existingSettings.DeliveryFee = companySettingViewModel.DeliveryFee;
                     existingSettings.PickUpDays = companySettingViewModel.PickUpDays;
                     existingSettings.DeliveryAddress = companySettingViewModel.DeliveryAddress;
+                    //existingSettings.StateId = companySettingViewModel.StateId;
 
 
 
@@ -652,43 +654,64 @@ namespace Logic.Helpers
             return null;
         }
 
-        public StateViewModel UpdateStates(StateViewModel stateViewModel)
+        public async Task<State> UpdateStates(StateViewModel viewModel)
         {
-            try
-            {
-                var existingState = _context.States
-                                            .FirstOrDefault(s => s.Id == stateViewModel.Id);
+            var existingState = _context.States
+                                            .FirstOrDefault(s => s.Id == viewModel.StateId);
+            //var state = await _context.States.FindAsync(viewModel.StateId);
 
-                if (existingState != null)
-                {
-                    existingState.Name = stateViewModel.Name;
-                    existingState.DeliveryFee = stateViewModel.DeliveryFee;
-                    existingState.Active = stateViewModel.Active;
-                    existingState.Deleted = stateViewModel.Deleted;
+            //if (existingState == null)
+            //{
+            //    state = new State();
+            //    _context.States.Add(state);
+            //}
 
-                    _context.States.Update(existingState);
-                    _context.SaveChanges();
-
-                    var updatedViewModel = new StateViewModel
-                    {
-                        Id = existingState.Id,
-                        Name = existingState.Name,
-                        DeliveryFee = existingState.DeliveryFee,
-                        Active = existingState.Active,
-                        Deleted = existingState.Deleted,
-                    };
-
-                    return updatedViewModel;
-                }
-
-                return null;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            existingState.DeliveryFee = viewModel.DeliveryFee;
+            existingState.Active = viewModel.Active;
+            existingState.Deleted = viewModel.Deleted;
+            
+            _context.States.Update(existingState);
+            await _context.SaveChangesAsync();
+            return existingState;
         }
+    
 
+    //public StateViewModel UpdateStates(StateViewModel stateViewModel)
+    //    {
+    //        try
+    //        {
+    //            var existingState = _context.States
+    //                                        .FirstOrDefault(s => s.Id == stateViewModel.StateId);
+
+    //            if (existingState != null)
+    //            {
+    //                existingState.Name = existingState.Name;
+    //                existingState.DeliveryFee = stateViewModel.DeliveryFee;
+    //                existingState.Active = stateViewModel.Active;
+    //                existingState.Deleted = stateViewModel.Deleted;
+
+    //                _context.States.Update(existingState);
+    //                _context.SaveChanges();
+
+    //                var updatedViewModel = new StateViewModel
+    //                {
+    //                    StateId = existingState.Id,
+    //                    Name = existingState.Name,
+    //                    DeliveryFee = existingState.DeliveryFee,
+    //                    Active = existingState.Active,
+    //                    Deleted = existingState.Deleted,
+    //                };
+
+    //                return updatedViewModel;
+    //            }
+
+    //            return null;
+    //        }
+    //        catch (Exception ex)
+    //        {
+    //            throw ex;
+    //        }
+    //    }
         public List<StateViewModel> GetAllStates()
         {
             try
@@ -697,7 +720,7 @@ namespace Logic.Helpers
                                      .Where(s => !s.Deleted) 
                                      .Select(s => new StateViewModel
                                      {
-                                         Id = s.Id,
+                                         StateId = s.Id,
                                          Name = s.Name,
                                          DeliveryFee = s.DeliveryFee,
                                          Active = s.Active,
@@ -712,7 +735,12 @@ namespace Logic.Helpers
                 throw ex;
             }
         }
-    
+
+        public State GetDeliveryFeeByStateId(int stateId)
+        {
+            return _context.States.FirstOrDefault(s => s.Id == stateId);
+        }
+
 
     }
 

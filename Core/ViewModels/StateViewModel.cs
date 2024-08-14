@@ -8,9 +8,9 @@ namespace Core.ViewModels
 {
     public class StateViewModel
     {
-        public int Id { get; set; }
+        public int StateId { get; set; }
         public string? Name { get; set; }
-        public string? DeliveryFee { get; set; }
+        public decimal? DeliveryFee { get; set; }
         public bool Deleted { get; set; }
         public bool Active { get; set; }
 
