@@ -12,11 +12,12 @@ namespace Core.ViewModels;
         public string? AccountNumber { get; set; }
         public string? AccountName { get; set; }
         public string? BankName { get; set; }
+    
         public int? PickUpDays { get; set; }
         public string? DeliveryFee { get; set; }
         public int? StateId { get; set; }
-    public bool Deleted { get; set; }
-    public bool Active { get; set; }
+        public bool Deleted { get; set; }
+        public bool Active { get; set; }
 
 
 }

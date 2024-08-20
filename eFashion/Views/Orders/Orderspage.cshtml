@@ -157,102 +157,107 @@
 
 
     
-    <div class="container her mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                <div id="order-summary">
-                <div class="card-header">Order Summary</div>
-                @if (TempData["SuccessMessage"] != null)
-                {
-                    <div class="alert alert-success">
-                        @TempData["SuccessMessage"]
-                    </div>
-                }
+<div class="container her mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+            <div id="order-summary">
+            <div class="card-header">Order Summary</div>
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success">
+                    @TempData["SuccessMessage"]
+                </div>
+            }
 
-                @if (TempData["ErrorMessage"] != null)
-                {
-                    <div class="alert alert-danger">
-                        @TempData["ErrorMessage"]
-                    </div>
-                }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger">
+                    @TempData["ErrorMessage"]
+                </div>
+            }
 
-                    <div class="card-body">
-                    <form>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="designName"><b>Design Names</b></label>
-                                    <div id="designName" class="form-control w-50 offset-3 text-center" readonly>
-                                        @foreach (var name in Model.DesignName)
-                                        {
-                                            <div>@name</div>
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="quantity"><b>Quantities</b></label>
-                                    <div id="quantity" class="form-control w-50 offset-3 text-center" readonly>
-                                        @foreach (var qty in Model.Quantity)
-                                        {
-                                            <div>@qty</div>
-                                        }
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="totalQuantity"><b>Number of Items</b></label>
-                                    <input asp-for="TotalQuantity" type="text" class="form-control w-50 offset-3 text-center" readonly />
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="SubTotal"><b>SubTotal</b></label>
-                                    <div id="SubTotal" class="form-control w-50 offset-3 text-center" readonly>
-                                        @foreach (var sbt in Model.SubTotal)
-                                        {
-                                            <div>@sbt</div>
-                                        }
-                                    </div>
-                                </div>
-                                <div class="form-group">
-
-                                    <label for="totalAmount"><b>Item's Total Amount</b></label>
-                                    <input asp-for="TotalAmount" type="text" class="form-control w-50 offset-3 text-center" readonly />
+                <div class="card-body">
+                <form>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="designName"><b>Design Names</b></label>
+                                <div id="designName" class="form-control w-50 offset-3 text-center" readonly>
+                                    @foreach (var name in Model.DesignName)
+                                    {
+                                        <div>@name</div>
+                                    }
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="quantity"><b>Quantities</b></label>
+                                <div id="quantity" class="form-control w-50 offset-3 text-center" readonly>
+                                    @foreach (var qty in Model.Quantity)
+                                    {
+                                        <div>@qty</div>
+                                    }
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="totalQuantity"><b>Number of Items</b></label>
+                                <input asp-for="TotalQuantity" type="text" class="form-control w-50 offset-3 text-center" readonly />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="SubTotal"><b>SubTotal</b></label>
+                                <div id="SubTotal" class="form-control w-50 offset-3 text-center" readonly>
+                                    @foreach (var sbt in Model.SubTotal)
+                                    {
+                                        <div>@sbt</div>
+                                    }
+                                </div>
+                            </div>
+                            <div class="form-group">
 
-                        <div class="form-group">
-                            <label for="paymentType"><b>Payment Type</b></label>
-                            <select id="PaymentTypeId" asp-items="@(new SelectList(ViewBag.PaymentType, "Id", "Name"))" required class="select"></select>
+                                <label for="totalAmount"><b>Item's Total Amount</b></label>
+                                <input asp-for="TotalAmount" type="text" class="form-control w-50 offset-3 text-center" readonly />
+                            </div>
                         </div>
-                        <div class="form-group d-none">
-                            <label for="uploadPayment">Upload Payment</label>
-                            <input type="file" id="uploadPayment" name="uploadPayment" required>
-                        </div>
-                        <div class="form-group d-none">
-                            <label for="deliveryDate">Delivery Date</label>
-                            <input type="date" id="deliveryDate" name="deliveryDate" required>
-                        </div>
-                        <div class="text-center">
-                            <button type="submit" onclick="checkout()" class="btn btn-secondary w-25">Order Now</button>
-                            <button type="button" id="close-button" class="btn btn-secondary w-25">CLOSE</button>
-                        </div>
-                    </form>
                     </div>
+
+                    <div class="form-group">
+                        <label for="paymentType"><b>Payment Type</b></label>
+                        <select id="PaymentTypeId" asp-items="@(new SelectList(ViewBag.PaymentType, "Id", "Name"))" required class="select"></select>
+                    </div>
+                            <div class="form-group">
+                        <label for="States"><b>States</b></label>
+                        <select id="StateId" asp-items="ViewBag.States" required class="select" onchange="updateDeliveryFee()"></select>
+                    </div>
+                            <div class="form-group">
+                        <label for="deliveryFee">Delivery Fee</label>
+                        <input type="text" asp-for="DeliveryFee" class="form-control" id="deliveryFee" placeholder="Enter Delivery Fee" readonly/>
+                    </div>
+                   
+                    <div class="form-group d-none">
+                        <label for="uploadPayment">Upload Payment</label>
+                        <input type="file" id="uploadPayment" name="uploadPayment" required>
+                    </div>
+                    <div class="form-group d-none">
+                        <label for="deliveryDate">Delivery Date</label>
+                        <input type="date" id="deliveryDate" name="deliveryDate" required>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" onclick="checkout()" class="btn btn-secondary w-25">Order Now</button>
+                        <button type="button" id="close-button" class="btn btn-secondary w-25">CLOSE</button>
+                    </div>
+                </form>
                 </div>
             </div>
         </div>
     </div>
+    </div>
+</div>
 
- <script>
-        document.getElementById('close-button').addEventListener('click', function(event) {
-            event.preventDefault(); // Prevent form submission
-            document.getElementById('order-summary').classList.add('hidden');
-        });
- </script>
+
 
 
 <!-- Transfer Modal -->
@@ -271,7 +276,7 @@
                     <p>Account Name: <span id="companyAccountName"></span></p>
                     <p>Account Number: <span id="companyAccountNumber"></span></p>
                     <p>Bank Name: <span id="companyBankName"></span></p>
-                    <p>Company PhoneNumber: <span id="companyPhoneNumber"></span></p>
+                    <p>Company PhoneNumber: <span id="deliveryAddress"></span></p>
                     <p>Delivery Fee: <span id="deliveryFee"></span></p>
                     <p>Item's Total Amount: <b>₦<span id="totalAmount"></span></b></p>
                 </div>
@@ -378,8 +383,66 @@
 
 
         </div>
+        </div>
     </div>
 </div>
 
+<script>
 
-    
+    document.addEventListener('DOMContentLoaded', function () {
+        updateDeliveryFee();
+    });
+
+
+
+    function updateDeliveryFee() {
+        console.log("state changed")
+        debugger
+        var stateId = $('#StateId').val();
+        console.log("stateId:", stateId);
+
+        $.ajax({
+            url: '@Url.Action("GetDeliveryFee", "Orders")',
+            type: 'GET',
+            data: { stateId: stateId },
+            success: function (result) {
+                $('#deliveryFee').val(result.deliveryFee);
+            },
+            error: function () {
+                alert('Error fetching delivery fee.');
+            }
+        });
+    }
+
+
+</script>
+
+    <script>
+        document.getElementById('close-button').addEventListener('click', function (event) {
+            event.preventDefault(); // Prevent form submission
+            document.getElementById('order-summary').classList.add('hidden');
+        });
+    </script>
+
+@* <script>
+    function toggleFields() {
+        var paymentType = document.getElementById("PaymentTypeId").value;
+        var stateField = document.getElementById("stateField");
+        var deliveryFeeField = document.getElementById("deliveryFeeField");
+
+        if (paymentTypeId === "2") {
+            stateField.style.display = "none";
+            deliveryFeeField.style.display = "none";
+        } else {
+            stateField.style.display = "block";
+            deliveryFeeField.style.display = "block";
+        }
+    }
+
+    // Call the function on page load to ensure correct visibility based on initial selection
+    window.onload = function () {
+        toggleFields();
+    };
+</script>
+ *@
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

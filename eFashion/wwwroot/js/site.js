@@ -282,13 +282,14 @@ function updateQuantity(id, change) {
 
 function checkout() {
     var paymentTypeId = $('#PaymentTypeId').val();
-
-    debugger;
+    var stateId = $('#StateId').val();
+    debugger
     $.ajax({
         type: 'GET',
         url: '/Cart/GetTotalAmount',
         data: {
             paymentTypeId: paymentTypeId,
+            stateId: stateId
         },
         success: function (result) {
             debugger
@@ -304,7 +305,7 @@ function checkout() {
                 $('#deliveryAddress').text(result.getCompanySettings.deliveryAddress);
                 if (result.paymentTypeId == '1') {
                     $('#deliveryFee').text(result.getCompanySettings.deliveryFee);
-
+                    
                 }
                 //$('#selectedPaymentType').text(result.paymentTypeId);
                 //var selectedPaymentType = $('#PaymentTypeId').val();
@@ -324,6 +325,7 @@ function checkout() {
             }
         },
         error: function (ex) {
+            console.log(ex);
             newErrorAlert("Error occurred. Please try again.");
         }
     });

@@ -182,48 +182,118 @@ namespace eFashion.Controllers
         }
 
 
+        
+      
         [HttpGet]
-        public IActionResult GetTotalAmount(String paymentTypeId)
+        public IActionResult GetTotalAmount(string paymentTypeId, int stateId)
         {
-
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var cartItems = _context.Carts.Where(c => c.AppUser.Id == userId && !c.Deleted && c.Active).Include(c => c.SamplesPage).Include(c => c.AppUser).ToList();
-
-            if (cartItems == null || !cartItems.Any())
+            try
             {
-                return Json(new { isError = true, message = "Cart is empty" });
-            }
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var cartItems = _context.Carts
+                    .Where(c => c.AppUser.Id == userId && !c.Deleted && c.Active)
+                    .Include(c => c.SamplesPage)
+                    .Include(c => c.AppUser)
+                    .ToList();
 
-            var getCompanySettings = _adminHelper.GetCompanySetting().Result;
-            var deliveryFee = getCompanySettings?.DeliveryFee != null ? Convert.ToDecimal(getCompanySettings.DeliveryFee) : 0;
-            var totalAmount = cartItems.Sum(c => c.SubTotal);
-            var totalAmountToPay = totalAmount + deliveryFee;
-            var cartItemsDetails = cartItems.Select(c => new
-            {
-                c.Id,
-                c.SamplesPage.MaterialName,
-                c.Quantity,
-                c.SamplesPage.Price,
-                c.SubTotal
-            }).ToList();
-
-            return Json(new { isError = false, totalAmount = totalAmount ,
-                paymentTypeId = paymentTypeId ,
-                totalAmountToPay = totalAmountToPay, cartItems = cartItemsDetails,
-                getCompanySettings = new
+                if (cartItems == null || !cartItems.Any())
                 {
-                    getCompanySettings.AccountName,
-                    getCompanySettings.AccountNumber, 
-                    getCompanySettings.BankName ,
-                    getCompanySettings.CompanyAddress,
-                    getCompanySettings.PickUpDays,
-                    getCompanySettings.DeliveryAddress,
-                    getCompanySettings.DeliveryFee,
-                    
-
+                    return Json(new { isError = true, message = "Cart is empty" });
                 }
-            });
+
+                // Retrieve the delivery fee based on the selected state
+                var deliveryFee = _context.States
+                    .Where(s => s.Id == stateId)
+                    .FirstOrDefault()?.DeliveryFee ?? 0;
+
+                var totalAmount = cartItems.Sum(c => c.SubTotal);
+                var totalAmountToPay = totalAmount + deliveryFee;
+
+                var cartItemsDetails = cartItems.Select(c => new
+                {
+                    c.Id,
+                    c.SamplesPage.MaterialName,
+                    c.Quantity,
+                    c.SamplesPage.Price,
+                    c.SubTotal
+                }).ToList();
+
+                var getCompanySettings = _adminHelper.GetCompanySetting().Result;
+
+                getCompanySettings.DeliveryFee = deliveryFee.ToString();
+
+                return Json(new
+                {
+                    isError = false,
+                    totalAmount = totalAmount,
+                    paymentTypeId = paymentTypeId,
+                    totalAmountToPay = totalAmountToPay,
+                    deliveryFee = deliveryFee,
+                    cartItems = cartItemsDetails,
+                    getCompanySettings = new
+                    {
+                        getCompanySettings.AccountName,
+                        getCompanySettings.AccountNumber,
+                        getCompanySettings.BankName,
+                        getCompanySettings.CompanyAddress,
+                        getCompanySettings.PickUpDays,
+                        getCompanySettings.DeliveryAddress,
+                        getCompanySettings.DeliveryFee,
+                        
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                return Json(new { isError = true, message = ex.Message });
+            }
         }
+
+
+
+
+        //public IActionResult GetTotalAmount(String paymentTypeId)
+        //{
+
+        //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        //    var cartItems = _context.Carts.Where(c => c.AppUser.Id == userId && !c.Deleted && c.Active).Include(c => c.SamplesPage).Include(c => c.AppUser).ToList();
+
+        //    if (cartItems == null || !cartItems.Any())
+        //    {
+        //        return Json(new { isError = true, message = "Cart is empty" });
+        //    }
+
+        //    var getCompanySettings = _adminHelper.GetCompanySetting().Result;
+        //    var deliveryFee = getCompanySettings?.DeliveryFee != null ? Convert.ToDecimal(getCompanySettings.DeliveryFee) : 0;
+        //    var totalAmount = cartItems.Sum(c => c.SubTotal);
+        //    var totalAmountToPay = totalAmount + deliveryFee;
+        //    var cartItemsDetails = cartItems.Select(c => new
+        //    {
+        //        c.Id,
+        //        c.SamplesPage.MaterialName,
+        //        c.Quantity,
+        //        c.SamplesPage.Price,
+        //        c.SubTotal
+        //    }).ToList();
+
+        //    return Json(new { isError = false, totalAmount = totalAmount ,
+        //        paymentTypeId = paymentTypeId ,
+        //        totalAmountToPay = totalAmountToPay, cartItems = cartItemsDetails,
+        //        getCompanySettings = new
+        //        {
+        //            getCompanySettings.AccountName,
+        //            getCompanySettings.AccountNumber, 
+        //            getCompanySettings.BankName ,
+        //            getCompanySettings.CompanyAddress,
+        //            getCompanySettings.PickUpDays,
+        //            getCompanySettings.DeliveryAddress,
+        //            getCompanySettings.DeliveryFee,
+
+
+        //        }
+        //    });
+        //}
 
     }
 

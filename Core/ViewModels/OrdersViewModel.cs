@@ -1,4 +1,5 @@
-﻿using Core.Models;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Core.Models;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -8,8 +9,10 @@ using System.Text;
 using System.Threading.Tasks;
 using static Core.Enum.eFashionEnum;
 
+
 namespace Core.ViewModels
 {
+
     public class OrdersViewModel
     {
         public int? Id { get; set; }
@@ -50,7 +53,10 @@ namespace Core.ViewModels
         public DateTime PaymentDate { get; set; }
         public DateTime ApproveDate { get; set; }
         public PaymentVerificationStatus PaymentVerificationStatus { get; set; }
+        public int StateId { get; set; }
+        public decimal? DeliveryFee { get; set; }
+        [ForeignKey("StateId")]
 
-
+        public SelectList? States { get; set; }
     }
 }

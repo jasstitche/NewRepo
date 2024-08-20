@@ -1,12 +1,15 @@
 ﻿using Core.Data;
 using Core.Models;
 using Core.ViewModels;
+using eFashion.Models;
 using Logic.Helpers;
 using Logic.IHelpers;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 
@@ -18,15 +21,18 @@ namespace eFashion.Controllers
         private readonly IUserHelper _userHelper;
         private readonly IAdminHelper _adminHelper;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IDropdownHelper _dropdownHelper;
 
 
 
-        public OrdersController(ApplicationDbContext context, IUserHelper userHelper, IWebHostEnvironment webHostEnvironment, IAdminHelper adminHelper)
+
+        public OrdersController(ApplicationDbContext context, IUserHelper userHelper, IWebHostEnvironment webHostEnvironment, IAdminHelper adminHelper, IDropdownHelper dropdownHelper)
         {
             _context = context;
             _userHelper = userHelper;
             _webHostEnvironment = webHostEnvironment;
             _adminHelper = adminHelper;
+            _dropdownHelper = dropdownHelper;
         }
 
         [HttpGet]
@@ -62,6 +68,29 @@ namespace eFashion.Controllers
             return View(orderItemsDetails);
         }
 
+        [HttpGet]
+        public IActionResult GetDeliveryFee(int stateId)
+        {
+            var deliveryFee = _context.States.Where(s => s.Id == stateId).FirstOrDefault()?.DeliveryFee;
+            return Json(new { DeliveryFee = deliveryFee });
+        }
+
+        //[HttpGet]
+        //public IActionResult GetDeliveryFees(int stateId)
+        //{
+
+        //    var deliveryFee = _context.States
+        //                              .Where(s => s.Id == stateId)
+        //                              .Select(s => s.DeliveryFee)
+        //                              .FirstOrDefault();
+
+        //    if (deliveryFee == null)
+        //    {
+        //        return Json(new { deliveryFee = "N/A" }); // Handle cases where no fee is found
+        //    }
+
+        //    return Json(new { deliveryFee = deliveryFee });
+        //}
 
 
         [HttpGet]
@@ -75,12 +104,23 @@ namespace eFashion.Controllers
                                     .ToList();
 
             ViewBag.PaymentType = _userHelper.GetDropDownEnumsList();
+            //ViewBag.States =  _dropdownHelper.GetState();
+
+            ViewBag.States = new SelectList(_context.States, "Id", "Name");
 
             if (cartItems == null || !cartItems.Any())
             {
-                return View("Error", new { message = "Cart is empty" });
+                //return View("Error", new { message = "Cart is empty" });
+
+                var errorModel = new ErrorViewModel
+                {
+                    Message = "Cart is empty",
+                    RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+                };
+                return View("Error", errorModel);
+
             }
-           
+
 
 
             var model = new OrdersViewModel()
@@ -91,7 +131,7 @@ namespace eFashion.Controllers
                 TotalQuantity = cartItems.Sum(c => c.Quantity),
                 SubTotal = cartItems.Select(c => c.SubTotal).ToList(),
                 TotalAmountToPay = cartItems.Sum(c => c.SubTotal),
-          
+                //States = ViewBag.States as SelectList                
                 //CompanySettings = getCompanySettings
             };
 
