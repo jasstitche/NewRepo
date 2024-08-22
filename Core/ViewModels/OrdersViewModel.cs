@@ -54,9 +54,9 @@ namespace Core.ViewModels
         public DateTime ApproveDate { get; set; }
         public PaymentVerificationStatus PaymentVerificationStatus { get; set; }
         public int StateId { get; set; }
-        public decimal? DeliveryFee { get; set; }
         [ForeignKey("StateId")]
-
         public SelectList? States { get; set; }
+        public decimal? DeliveryFee { get; set; }
+
     }
 }

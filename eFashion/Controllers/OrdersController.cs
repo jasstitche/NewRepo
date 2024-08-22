@@ -12,6 +12,7 @@ using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pag
 using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
+using static Core.Enum.eFashionEnum;
 
 namespace eFashion.Controllers
 {
@@ -131,8 +132,6 @@ namespace eFashion.Controllers
                 TotalQuantity = cartItems.Sum(c => c.Quantity),
                 SubTotal = cartItems.Select(c => c.SubTotal).ToList(),
                 TotalAmountToPay = cartItems.Sum(c => c.SubTotal),
-                //States = ViewBag.States as SelectList                
-                //CompanySettings = getCompanySettings
             };
 
             return View(model);
@@ -177,10 +176,15 @@ namespace eFashion.Controllers
             //{
             //    unqueFileName = UploadedFile(viewModel.UploadPayment);
             //}
-            var checkIfPaid = _userHelper.CheckIfPendingPayment(userId);
-            if (checkIfPaid)
+            //var checkIfPaid = _userHelper.CheckIfPendingPayment(userId);
+            //if (checkIfPaid)
+            //{
+            //    return RedirectToAction("Has made payment");
+            //}
+            if (viewModel.PaymentTypeId == PaymentType.Cash)
             {
-                return RedirectToAction("Has made payment");
+                // Subtract DeliveryFee from TotalAmountToPay
+                viewModel.TotalAmountToPay = (viewModel.TotalAmountToPay ?? 0) - (viewModel.DeliveryFee ?? 0);
             }
             var savePaymentDetials = await _userHelper.SaveCashPaymentDetails(viewModel, userId);
 
@@ -195,6 +199,7 @@ namespace eFashion.Controllers
             }
             //return RedirectToAction("Index");
         }
+
         public string UploadedFile(IFormFile filesSender)
         {
             string uniqueFileName = string.Empty;

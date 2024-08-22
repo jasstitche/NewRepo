@@ -226,24 +226,25 @@
 
                     <div class="form-group">
                         <label for="paymentType"><b>Payment Type</b></label>
-                        <select id="PaymentTypeId" asp-items="@(new SelectList(ViewBag.PaymentType, "Id", "Name"))" required class="select"></select>
+                        <select id="PaymentTypeId" asp-items="@(new SelectList(ViewBag.PaymentType, "Id", "Name"))" required class="select" onchange="toggleStateAndDeliveryFee()"></select>
                     </div>
-                            <div class="form-group">
-                        <label for="States"><b>States</b></label>
-                        <select id="StateId" asp-items="ViewBag.States" required class="select" onchange="updateDeliveryFee()"></select>
+                    <div class="d-none" id="stateContainer">
+                        <div class="form-group">
+                            <label for="States"><b>States</b></label>
+                            <select id="StateId" asp-items="ViewBag.States" required class="select" onchange="updateDeliveryFee()"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="deliveryFee">Delivery Fee</label>
+                            <input type="text" asp-for="DeliveryFee" class="form-control" id="deliveryFee" placeholder="Enter Delivery Fee" readonly/>
+                        </div>
                     </div>
-                            <div class="form-group">
-                        <label for="deliveryFee">Delivery Fee</label>
-                        <input type="text" asp-for="DeliveryFee" class="form-control" id="deliveryFee" placeholder="Enter Delivery Fee" readonly/>
-                    </div>
-                   
                     <div class="form-group d-none">
                         <label for="uploadPayment">Upload Payment</label>
                         <input type="file" id="uploadPayment" name="uploadPayment" required>
                     </div>
                     <div class="form-group d-none">
                         <label for="deliveryDate">Delivery Date</label>
-                        <input type="date" id="deliveryDate" name="deliveryDate" required>
+                        <input type="date" id="deliveryDate" name="deliveryDate" >
                     </div>
                     <div class="text-center">
                         <button type="submit" onclick="checkout()" class="btn btn-secondary w-25">Order Now</button>
@@ -387,6 +388,8 @@
     </div>
 </div>
 
+
+
 <script>
 
     document.addEventListener('DOMContentLoaded', function () {
@@ -414,7 +417,17 @@
         });
     }
 
+    function toggleStateAndDeliveryFee() {
+        debugger;
+        var paymentTypeId = document.getElementById("PaymentTypeId").value;
+        var stateContainer = document.getElementById("stateContainer");
 
+        if (paymentTypeId == "2") {
+            stateContainer.classList.add("d-none");
+        } else if (paymentTypeId == "1") {
+            stateContainer.classList.remove("d-none");
+        }
+    }
 </script>
 
     <script>

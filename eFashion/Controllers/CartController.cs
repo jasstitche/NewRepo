@@ -201,14 +201,22 @@ namespace eFashion.Controllers
                     return Json(new { isError = true, message = "Cart is empty" });
                 }
 
+                
                 // Retrieve the delivery fee based on the selected state
                 var deliveryFee = _context.States
                     .Where(s => s.Id == stateId)
                     .FirstOrDefault()?.DeliveryFee ?? 0;
 
                 var totalAmount = cartItems.Sum(c => c.SubTotal);
-                var totalAmountToPay = totalAmount + deliveryFee;
-
+                decimal totalAmountToPay = 0;
+                if (paymentTypeId == "1")
+                {
+                     totalAmountToPay = (decimal)(totalAmount + deliveryFee);
+                }
+                else
+                {
+                     totalAmountToPay = (decimal)totalAmount;
+                }
                 var cartItemsDetails = cartItems.Select(c => new
                 {
                     c.Id,
