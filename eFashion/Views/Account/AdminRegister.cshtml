@@ -10,6 +10,13 @@
             @TempData["ErrorMessage"]
         </div>
     }
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div id="success-alert" class="alert alert-success light-alert">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
 }
 
 <style>
@@ -26,6 +33,20 @@
         color: #721c24;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
+
+    .light-alert {
+        position: fixed;
+        right: 150px;
+        top: 40px;
+        width: 500px;
+        z-index: 1000;
+        padding: 15px;
+        border: 1px solid green;
+        border-radius: 5px;
+        background-color:#3cb371;
+        color: #f8d7da;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
     .input-group-append {
         cursor: pointer;
     }
@@ -39,6 +60,8 @@
         color: #007bff;
     }
 </style>
+
+
 
 
     <div class="container">
@@ -133,7 +156,13 @@
         if (alertElement) {
             setTimeout(function () {
                 alertElement.style.display = 'none';
-            }, 3000); // 5000 milliseconds = 3 seconds
+            }, 6000); // 5000 milliseconds = 3 seconds
+        }
+        var alertElement = document.getElementById('success-alert');
+        if (alertElement) {
+            setTimeout(function () {
+                alertElement.style.display = 'none';
+            }, 6000); // 5000 milliseconds = 3 seconds
         }
     }); 
 </script>

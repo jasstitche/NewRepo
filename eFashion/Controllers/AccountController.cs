@@ -77,9 +77,12 @@ namespace eFashion.Controllers
                 {
                     await _signInManager.PasswordSignInAsync(addUser, addUser.PasswordHash, true, true);
 
+                    TempData["SuccessMessage"] = "Registration successful!";
+
                     return RedirectToAction("Login", "Account");
                 }
             }
+            TempData["ErrorMessage"] = "Registration failed. Please try again.";
             return View(applicationUserViewModel);
         }
         //[HttpPost]
@@ -162,6 +165,10 @@ namespace eFashion.Controllers
                 if (model != null)
                 {
                     var user = _userHelper.FindUserByEmail(model.Email);
+                    if (user == null)
+                    {
+                        TempData["ErrorMessage"] = "Invalid Login Attempt.";
+                    }
                     if (user != null)
                     {
                         var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, true, true).ConfigureAwait(false);
@@ -182,7 +189,7 @@ namespace eFashion.Controllers
                                 return RedirectToAction("UserIndex", "User");
                             }
                         }
-                        ViewBag.Message = "Invalid Login Attempt";
+                        TempData["ErrorMessage"] = "Invalid Login Attempt";
                         ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
                     }
                 }

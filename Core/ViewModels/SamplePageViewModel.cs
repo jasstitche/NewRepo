@@ -19,7 +19,9 @@ namespace Core.ViewModels
         public string? ClothSize { get; set; }
         public decimal? Price { get; set; }
         public DateTime? DateSampled { get; set; }
-       
+        public int? NumberOfItem { get; set; }
+        [NotMapped]
+
         public IFormFile? SampleImage { get; set; }
         public int ? NumberOfItems { get; set; }
         public int? SampleId { get; set; }

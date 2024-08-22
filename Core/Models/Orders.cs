@@ -19,7 +19,7 @@ namespace Core.Models
         public int? SampleId { get; set; }
         [ForeignKey("SampleId")]
         public virtual SamplePage SamplePage { get; set; }
-        public int PaymentId {  get; set; }
+        public int? PaymentId {  get; set; }
         [ForeignKey("PaymentId")]
 
         public virtual Payment Payment { get; set; }

@@ -2,6 +2,7 @@
 using Core.Models;
 using Logic.IHelpers;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace eFashion.Controllers
 {
@@ -16,7 +17,116 @@ namespace eFashion.Controllers
             _webHostEnvironment = webHostEnvironment;
             _adminHelper = adminHelper;
         }
- 
+        [HttpGet]
+        public IActionResult Index()
+        {
+            var samples = _context.SamplePages.ToList(); // Ensure this is a collection
+            return View(samples);
+        }
+
+        [HttpGet]
+        public IActionResult EditSample(int id)
+        {
+            var sample = _context.SamplePages.Find(id);
+            if (sample == null)
+            {
+                return NotFound();
+            }
+            return View(sample);
+        }
+
+        [HttpPost]
+        public IActionResult EditSample(SamplePage sampleDetails)
+        {
+            if (sampleDetails == null)
+            {
+                TempData["ErrorMessage"] = "Unable to edit sample.";
+                return NotFound();
+            }
+            if (sampleDetails.SampleImage != null)
+            {
+                // Upload the new image and get the file path
+                string uniqueFileName = UploadedFile(sampleDetails.SampleImage);
+                sampleDetails.File = uniqueFileName;
+            }
+            else
+            {
+                // Retain the existing image if no new image is uploaded
+                var existingSample = _context.SamplePages.AsNoTracking().FirstOrDefault(s => s.id == sampleDetails.id);
+                if (existingSample != null)
+                {
+                    sampleDetails.File = existingSample.File;
+                }
+            }
+
+                _context.SamplePages.Update(sampleDetails);
+                _context.SaveChanges();
+
+            TempData["SuccessMessage"] = "Sample successfully updated";
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public IActionResult DeleteSample(int id)
+        {
+            var sample = _context.SamplePages.Find(id);
+            if (sample == null)
+            {
+                return NotFound();
+            }
+            return View(sample);
+        }
+
+
+        [HttpPost, ActionName("DeleteSample")]
+        public IActionResult DeleteSampleConfirmed(int id)
+        {
+            var sample = _context.SamplePages.Find(id);
+
+            if (sample == null)
+            {
+                TempData["ErrorMessage"] = "Sample not found.";
+                return NotFound();
+            }
+
+            // Retrieve all related orders
+            var relatedOrders = _context.Orders.Where(o => o.SampleId == id).ToList();
+
+            // Remove Payment references from Orders first
+            foreach (var order in relatedOrders)
+            {
+                // Remove Payment references from Orders (assuming nullable foreign key)
+                order.PaymentId = null; // Or set to a default value if necessary
+                _context.Orders.Update(order);
+            }
+
+            // Save changes to remove PaymentId references
+            _context.SaveChanges();
+
+            // Now delete related payments
+            foreach (var order in relatedOrders)
+            {
+                var relatedPayments = _context.Payments.Where(p => p.OrdersId == order.Id).ToList();
+                _context.Payments.RemoveRange(relatedPayments);
+            }
+
+            // Delete related orders
+            _context.Orders.RemoveRange(relatedOrders);
+
+            // Delete related carts
+            var relatedCarts = _context.Carts.Where(c => c.SampleId == id).ToList();
+            _context.Carts.RemoveRange(relatedCarts);
+
+            // Delete the sample record
+            _context.SamplePages.Remove(sample);
+
+            // Save changes to the database
+            _context.SaveChanges();
+
+            TempData["SuccessMessage"] = "Sample successfully deleted!";
+            return RedirectToAction(nameof(Index));
+        }
+
         [HttpGet]
         public IActionResult CreateSample()
         {

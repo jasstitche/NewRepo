@@ -181,11 +181,7 @@ namespace eFashion.Controllers
             //{
             //    return RedirectToAction("Has made payment");
             //}
-            if (viewModel.PaymentTypeId == PaymentType.Cash)
-            {
-                // Subtract DeliveryFee from TotalAmountToPay
-                viewModel.TotalAmountToPay = (viewModel.TotalAmountToPay ?? 0) - (viewModel.DeliveryFee ?? 0);
-            }
+
             var savePaymentDetials = await _userHelper.SaveCashPaymentDetails(viewModel, userId);
 
             if (savePaymentDetials)

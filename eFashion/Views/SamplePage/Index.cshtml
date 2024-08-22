@@ -1,0 +1,118 @@
+﻿@model IEnumerable<Core.Models.SamplePage>
+
+@{
+
+    ViewData["Title"] = "Index";
+
+}
+@{
+    if (TempData["ErrorMessage"] != null)
+    {
+        <div id="error-alert" class="alert alert-danger custom-alert">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div id="success-alert" class="alert alert-success light-alert">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+}
+
+
+<style>
+    .custom-alert {
+        position: fixed;
+        right: 150px;
+        top: 40px;
+        width: 500px;
+        z-index: 1000;
+        padding: 15px;
+        border: 1px solid red;
+        border-radius: 5px;
+        background-color: #f8d7da;
+        color: #721c24;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .light-alert {
+        position: fixed;
+        right: 150px;
+        top: 40px;
+        width: 500px;
+        z-index: 1000;
+        padding: 15px;
+        border: 1px solid green;
+        border-radius: 5px;
+        background-color: #3cb371;
+        color: #f8d7da;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+</style>
+
+
+<div class="container mt-5">
+    <h2 style="text-align: center;"><b>Index</b></h2>
+
+
+    <table class="table table-striped table-bordered mt-4">
+        <thead>
+            <tr>
+                <th>S/No.</th>
+                <th>Design Name</th>
+                <th>Material Name</th>
+                <th>Cloth Size</th>
+                <th>Price</th>
+                <th>No of Items</th>
+                <th>Sample Image</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                var serialNumber = 1;
+                @foreach (var sample in Model)
+                {
+                    <tr>
+                        <td>@serialNumber</td>
+                        <td>@sample.DesignName</td>
+                        <td>@sample.MaterialName</td>
+                        <td>@sample.ClothSize</td>
+                        <td>@sample.Price</td>
+                        <td>@sample.NumberOfItem</td>
+                        <td>
+                            <img src="@Url.Content($"~/{sample.File}")" class="card-img-top" alt="@sample.DesignName" style="width:50px; height:50px;" />
+                        </td>
+                     
+                        <td>
+                            <a class="btn btn-primary" asp-action="EditSample" asp-route-id="@sample.id">Edit</a>
+                            <a class="btn btn-danger" asp-action="DeleteSample" asp-route-id="@sample.id">Delete</a>
+                        </td>
+                    </tr>
+                    serialNumber++;
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+
+<script>
+    var alertErrorElement = document.getElementById('error-alert');
+    if (alertErrorElement) {
+        setTimeout(function () {
+            alertErrorElement.style.display = 'none';
+        }, 4000); // 5000 milliseconds = 3 seconds
+    }
+
+    var alertElement = document.getElementById('success-alert');
+    if (alertElement) {
+        setTimeout(function () {
+            alertElement.style.display = 'none';
+        }, 6000); // 5000 milliseconds = 3 seconds
+    }
+</script>

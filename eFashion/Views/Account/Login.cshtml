@@ -4,6 +4,54 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 
 }
+@{
+    if (TempData["ErrorMessage"] != null)
+    {
+        <div id="error-alert" class="alert alert-danger custom-alert">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div id="success-alert" class="alert alert-success light-alert">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+}
+
+
+<style>
+    .custom-alert {
+        position: fixed;
+        right: 150px;
+        top: 40px;
+        width: 500px;
+        z-index: 1000;
+        padding: 15px;
+        border: 1px solid red;
+        border-radius: 5px;
+        background-color: #f8d7da;
+        color: #721c24;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .light-alert {
+        position: fixed;
+        right: 150px;
+        top: 40px;
+        width: 500px;
+        z-index: 1000;
+        padding: 15px;
+        border: 1px solid green;
+        border-radius: 5px;
+        background-color:#3cb371;
+        color: #f8d7da;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+</style>
+  
 
 @* <style>
    a{
@@ -106,20 +154,36 @@
         </form>
     </div>
 
-    <script>
-        function togglePasswordVisibility(inputId, iconId) {
-            var inputElement = document.getElementById(inputId);
-            var iconElement = document.getElementById(iconId);
+<script>
+    function togglePasswordVisibility(inputId, iconId) {
+        var inputElement = document.getElementById(inputId);
+        var iconElement = document.getElementById(iconId);
 
-            if (inputElement.type === "password") {
-                inputElement.type = "text";
-                iconElement.classList.remove("fa-eye");
-                iconElement.classList.add("fa-eye-slash");
-            } else {
-                inputElement.type = "password";
-                iconElement.classList.remove("fa-eye-slash");
-                iconElement.classList.add("fa-eye");
-            }
+        if (inputElement.type === "password") {
+            inputElement.type = "text";
+            iconElement.classList.remove("fa-eye");
+            iconElement.classList.add("fa-eye-slash");
+        } else {
+            inputElement.type = "password";
+            iconElement.classList.remove("fa-eye-slash");
+            iconElement.classList.add("fa-eye");
         }
-    </script>
+    }
+
+   
+        var alertErrorElement = document.getElementById('error-alert');
+        if (alertErrorElement) {
+            setTimeout(function () {
+                alertErrorElement.style.display = 'none';
+            }, 4000); // 5000 milliseconds = 3 seconds
+        }
+
+        var alertElement = document.getElementById('success-alert');
+        if (alertElement) {
+            setTimeout(function () {
+                alertElement.style.display = 'none';
+            }, 6000); // 5000 milliseconds = 3 seconds
+        }
+   
+</script>
    

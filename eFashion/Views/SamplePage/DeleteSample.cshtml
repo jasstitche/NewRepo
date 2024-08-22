@@ -1,0 +1,28 @@
+﻿@model Core.Models.SamplePage
+
+@{
+    ViewData["Title"] = "Delete Sample";
+}
+
+<div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="card w-25">
+        <div class="card-header text-center">
+            <h3>Confirm Deletion</h3>
+        </div>
+        <div class="card-body text-center">
+            <p>Are you sure you want to delete this sample?</p>
+            <h5 class="card-title">@Model.DesignName</h5>
+            <p class="card-text">Material: @Model.MaterialName</p>
+            <p class="card-text">Cloth Size: @Model.ClothSize</p>
+            <p class="card-text">Price: @Model.Price</p>
+            <p class="card-text">Number of Items: @Model.NumberOfItem</p>
+            <img src="@Url.Content($"~/{Model.File}")" class="img-fluid" alt="@Model.DesignName" style="width:100px; height:auto;" />
+        </div>
+        <div class="card-footer text-center">
+            <form asp-action="DeleteSample" asp-route-id="@Model.id" method="post">
+                <button type="submit" class="btn btn-danger">Delete</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
