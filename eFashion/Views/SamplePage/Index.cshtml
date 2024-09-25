@@ -89,8 +89,13 @@
                         </td>
                      
                         <td>
-                            <a class="btn btn-primary" asp-action="EditSample" asp-route-id="@sample.id">Edit</a>
-                            <a class="btn btn-danger" asp-action="DeleteSample" asp-route-id="@sample.id">Delete</a>
+                            <a class="btn btn-primary" asp-action="EditSample" asp-route-id="@sample.id">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <a class="btn btn-danger" asp-action="DeleteSample" asp-route-id="@sample.id">
+                                <i class="fas fa-trash-alt"></i> Delete
+                            </a>
+
                         </td>
                     </tr>
                     serialNumber++;
